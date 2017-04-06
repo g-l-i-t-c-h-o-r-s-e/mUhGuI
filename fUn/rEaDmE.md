@@ -1,2 +1,2 @@
 # fFmGlItCh
-A shitty batch file I made as a beta version of mUhGuI.
+A shitty batch file I made, the mother of mUhGuI.
