@@ -7,6 +7,7 @@ Just gonna say right now I can't take full credit. Just an edit of an autohotkey
 Basically were just misinterpreting data, which in my opinion can be a glitch :p
 Anywhore uncompressed formats work the best together, different pixel formats can spice things up, too.
 Let your i m a g i n a t i o n run wild.
+It's kind of a hit and miss with which formats will work together, but you'll find that out.
 
 
 Because I suck, I don't remember the exact combination for the first one, but check it out.
@@ -14,3 +15,9 @@ Because I suck, I don't remember the exact combination for the first one, but ch
 ![vlcsnap-2016-11-10-12h44m28s147](https://cloud.githubusercontent.com/assets/17163949/24837207/d11a6c70-1ceb-11e7-8108-99fc56e43776.png)
 
 Fuck yeah.
+
+
+Also included is what is lovingly called "Shitty Webcam".
+Right now I can't find the sauce, I'll update when I do. Pretty much it sends a few lines of random data via UDP to your localhost on port 1337; or 127.0.0.1:1337. This version starts as soon as it's executed, so I bound some hotkeys to start/kill it.
+![nin](https://cloud.githubusercontent.com/assets/17163949/24837321/fe5fe658-1cee-11e7-9d92-4cc19cf1fa25.gif)
+
