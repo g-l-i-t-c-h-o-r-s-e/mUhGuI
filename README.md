@@ -9,7 +9,7 @@ Anywhore uncompressed formats work the best together, different pixel formats ca
 Let your i m a g i n a t i o n run wild.
 
 
-Because I suck, I don't remember the exact combination for this one, but check it out.
+Because I suck, I don't remember the exact combination for the first one, but check it out.
 ![mememe](https://cloud.githubusercontent.com/assets/17163949/24837114/1127d566-1cea-11e7-843c-96d914227436.png)
 ![vlcsnap-2016-11-10-12h44m28s147](https://cloud.githubusercontent.com/assets/17163949/24837207/d11a6c70-1ceb-11e7-8108-99fc56e43776.png)
 
