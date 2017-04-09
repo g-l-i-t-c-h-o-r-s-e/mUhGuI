@@ -7,7 +7,7 @@ Basically were just misinterpreting data in realtime, which I personally conside
 Anywhore uncompressed formats work the best together, different pixel formats can spice things up, too.
 Let your i m a g i n a t i o n run wild.
 It's kind of a hit and miss with which formats will work together, but you'll find that out.
-Some Codec combinations could actually deafen you, lower your shit. Some form glitchy melodies~
+Some Codec combinations could actually deafen you, lower your shizzit. Some form glitchy melodies~
 I've included a compiled version if you don't have or wan't to install AutoHotKey.
 
 Pls hit me up if you have any ideas or issues! :>
