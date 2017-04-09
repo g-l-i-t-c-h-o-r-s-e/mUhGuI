@@ -14,6 +14,7 @@ I've included a compiled version if you don't have or wan't to install AutoHotKe
 
 Because I suck, I don't remember the exact combination for the first one, but check it out.
 ![mememe](https://cloud.githubusercontent.com/assets/17163949/24837114/1127d566-1cea-11e7-843c-96d914227436.png)
+![sexi](https://cloud.githubusercontent.com/assets/17163949/24837592/b9840a5e-1cf4-11e7-91cf-c72129c20c50.png)
 ![vlcsnap-2016-11-10-12h44m28s147](https://cloud.githubusercontent.com/assets/17163949/24837207/d11a6c70-1ceb-11e7-8108-99fc56e43776.png)
 
 Fuck yeah.
