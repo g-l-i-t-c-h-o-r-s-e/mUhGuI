@@ -11,7 +11,7 @@ It's kind of a hit and miss with which formats will work together, but you'll fi
 Some Codec combinations could actually deafen you, lower your shit. Some form glitchy melodies~
 I've included a compiled version if you don't have or wan't to install AutoHotKey.
 
-Pls hit me up if you have any ideas or issues :>
+Pls hit me up if you have any ideas or issues! :>
 
 
 Because I suck, I don't remember the exact combination for the first one, but check it out.
