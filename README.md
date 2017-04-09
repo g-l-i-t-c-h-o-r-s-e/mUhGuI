@@ -29,5 +29,5 @@ This version starts as soon as it's executed, so I bound some hotkeys to start/k
 
 [FFMpeg Windows Build](https://ffmpeg.zeranoe.com/builds/)
 
-Set FFMpeg as an Enviroment Variable
+[Set FFMpeg as an Enviroment Variable](http://www.wikihow.com/Install-FFmpeg-on-Windows/)
 
