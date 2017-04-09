@@ -26,6 +26,8 @@ This version starts as soon as it's executed, so I bound some hotkeys to start/k
 
 # rEqUiReMeNtS
 [https://autohotkey.com/](url) (if you wanna edit)
+
 [https://ffmpeg.zeranoe.com/builds/](url)
+
 Set FFmpeg as an Enviroment Variable
 
