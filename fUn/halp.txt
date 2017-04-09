@@ -1,6 +1,6 @@
 I came up with this idea while using what I assume was either a buggy version of FFDshow or I installed two different versions, I'm really not sure.
 It freaked out and sometimes would decode one codec with an "incorrect" one, making a beautiful explosion of pixels or fucked up colorspaces, etc.
-I had a realtime glitch on my hands, and I was moist...
+I had a realtime glitch on my hands, my body was ready.
 The possibilities I realized were almost endless; the combinations of codecs, pixel formats, sample rates, resolutions, etc. I've wasted a good five months searching for more every night lol ;-;
 I also got some inspiration from "A Vernacular of File Formats" by Rosa Menkman; specifically her Cinepak "Opened in a VLC player that associated the video with a purple/black/turquoise palette." (Which I have yet to reproduce perfectly)
 
