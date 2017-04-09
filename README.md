@@ -2,8 +2,7 @@
 A Shitty Command Line and FFMpeg GUI made for 
 G L I T C H I N G
 
-Just gonna say right now I can't take full credit. Just an edit of an autohotkey script I found that wraps a blank GUI around Command Prompt. I also can't program for shit :')
-
+Just gonna say right now I can't take full credit. Just an edit of an autohotkey script I found that wraps a blank GUI around Command Prompt.
 Basically were just misinterpreting data in realtime, which I personally consider a "glitch" :p
 Anywhore uncompressed formats work the best together, different pixel formats can spice things up, too.
 Let your i m a g i n a t i o n run wild.
