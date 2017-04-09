@@ -1,2 +1,2 @@
 # fFmGlItCh
-A shitty batch file I made, the mother of mUhGuI.
+A ̶s̶h̶i̶t̶t̶y̶ batch file I made, the mother of mUhGuI.
