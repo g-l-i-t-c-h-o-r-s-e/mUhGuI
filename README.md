@@ -6,6 +6,7 @@ Just gonna say right now I can't take full credit. Just an edit of an autohotkey
 
 Basically were just misinterpreting data, which in my opinion can be a glitch :p
 Anywhore uncompressed formats work the best together, different pixel formats can spice things up, too.
+Let your i m a g i n a t i o n run wild.
 
 
 Because I suck, I don't remember the exact combination for this one, but check it out.
