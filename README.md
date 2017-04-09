@@ -29,5 +29,5 @@ This version starts as soon as it's executed, so I bound some hotkeys to start/k
 
 [https://ffmpeg.zeranoe.com/builds/](url)
 
-Set FFmpeg as an Enviroment Variable
+Set FFMpeg as an Enviroment Variable
 
