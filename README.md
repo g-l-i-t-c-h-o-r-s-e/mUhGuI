@@ -8,7 +8,7 @@ Basically were just misinterpreting data, which in my opinion can be a glitch :p
 Anywhore uncompressed formats work the best together, different pixel formats can spice things up, too.
 Let your i m a g i n a t i o n run wild.
 It's kind of a hit and miss with which formats will work together, but you'll find that out.
-I've included a compiled version if you don't have or wan't to install AutoHotKey <3
+I've included a compiled version if you don't have or wan't to install AutoHotKey
 
 
 Because I suck, I don't remember the exact combination for the first one, but check it out.
