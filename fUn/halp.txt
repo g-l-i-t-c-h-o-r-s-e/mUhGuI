@@ -1,0 +1,46 @@
+I came up with this idea while using what I assume was either a buggy version of FFDshow or I installed two different versions, I'm really not sure.
+It freaked out and sometimes would decode one codec with an "incorrect" one, making a beautiful explosion of pixels or fucked up colorspaces, etc.
+I had a realtime glitch on my hands, and I was moist...
+The possibilities I realized were almost endless; the combinations of codecs, pixel formats, sample rates, resolutions, etc. I've wasted a good five months searching for more every night lol ;-;
+I also got some inspiration from "A Vernacular of File Formats" by Rosa Menkman; specifically her Cinepak "Opened in a VLC player that associated the video with a purple/black/turquoise palette." (Which I have yet to reproduce perfectly)
+
+Originally I would simply use the command line and have to backspace to change parameters, and we all know that is a pain after awhile.
+So I made FFMGlitch.bat to speed up the process, which I have integrated into this GUI (Press F7 after tabbing to the console)
+I had the GUI idea months ago, but I can't code for shit so I never looked into it. Then I remembered AutoHotKey has a GUI implementation and blindly slapped this together with what little experience I had.
+
+
+Enough of me, heres what I've kept to myself for months. More to come eventually.
+So yeh, have fun guis.
+
+
+===========================================================
+^                                                         ^
+^                      USEFUL SHIT                        ^
+^                                                         ^
+^                                                         ^
+^           F5        =         Auto-Click                ^
+^           F6        =        Save Clipboard             ^
+^           F7        =       Start FFMGlitch             ^
+^           F8        =     Commence Glitchening          ^
+^           F9        =  Corrupt Stream/ShittyWebcam      ^
+^           F10       =      Kill ShittyWebcam            ^
+^           F11       =         Kill FFplay               ^
+^         Alt+F12     =   Kill mUhGui/Emergency Exit      ^
+^                                                         ^
+^                                                         ^
+^                                                         ^
+^  use Auto-Click with pReViEw, it's also a toggle        ^
+^                                                         ^
+^  -f nut is less likely to break when corrupting stream  ^
+^                                                         ^
+^  Some things require specific output formats to work :P ^
+^                                                         ^
+^  open "ffplay" before opening "stream"                  ^
+^                                                         ^
+^  Lower your headphones before glitching audio shit      ^
+^                                                         ^
+^  -af asetrate gives the same effect as -ar if needed    ^
+^                                                         ^
+^                                                         ^
+===========================================================
+
