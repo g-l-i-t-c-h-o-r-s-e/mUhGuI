@@ -23,7 +23,7 @@ Fuck yeah.
 
 # sHiTtY wEbCaM
 Also included is what is lovingly called "Shitty Webcam".
-Right now my mate and I can't find the sauce, I'll update when I do. If you don't wanna use it, then don't. 
+Right now my mate and I can't find the sauce, I'll update when I do. If you don't wanna use it, then don't :^)
 Pretty much it sends a few lines of random data via UDP to your localhost on port 1337; or 127.0.0.1:1337. 
 This version starts as soon as it's executed, so I bound some hotkeys to start/kill it. (check halp.txt)
 ![nin](https://cloud.githubusercontent.com/assets/17163949/24837321/fe5fe658-1cee-11e7-9d92-4cc19cf1fa25.gif)
