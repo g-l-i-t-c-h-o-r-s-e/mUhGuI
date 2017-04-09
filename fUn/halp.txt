@@ -9,7 +9,7 @@ So I made FFMGlitch.bat to speed up the process, which I have integrated into th
 I had the GUI idea months ago, but I can't code for shit so I never looked into it. Then I remembered AutoHotKey has a GUI implementation and blindly slapped this together with what little experience I had.
 
 
-Enough of me, heres what I've kept to myself for months. More to come eventually.
+Enough of me, go break some stuff.
 So yeh, have fun guis.
 
 
@@ -33,13 +33,15 @@ So yeh, have fun guis.
 ^                                                         ^
 ^  -f nut is less likely to break when corrupting stream  ^
 ^                                                         ^
-^  Some things require specific output formats to work :P ^
+^  some things require specific output formats to work :P ^
 ^                                                         ^
 ^  open "ffplay" before opening "stream"                  ^
 ^                                                         ^
-^  Lower your headphones before glitching audio shit      ^
+^  lower your headphones before glitching audio shit      ^
 ^                                                         ^
 ^  -af asetrate gives the same effect as -ar if needed    ^
+^                                                         ^
+^  always TAB or hold TAB to the command prompt first     ^
 ^                                                         ^
 ^                                                         ^
 ===========================================================
