@@ -23,3 +23,5 @@ Pretty much it sends a few lines of random data via UDP to your localhost on por
 This version starts as soon as it's executed, so I bound some hotkeys to start/kill it.
 ![nin](https://cloud.githubusercontent.com/assets/17163949/24837321/fe5fe658-1cee-11e7-9d92-4cc19cf1fa25.gif)
 
+# rEqUiReMeNtS (if you wanna edit)
+[https://autohotkey.com/](url)
