@@ -1,4 +1,4 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
+#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
@@ -56,6 +56,7 @@ Gui, Add, Button, x8 y360 w38 h30  glel,ffplay
 Gui, Add, Button, x8 y399 w38 h40 gkek,stream
 Gui, Add, Button, x585 y390 w53 h22 gwhy,pReViEw
 Gui, Color, 884488
+
 
 ; Show the Gui. Specify width since auto-sizing won't account for the console.
 Gui, Show, % "W" ConsoleWidth+14
@@ -199,8 +200,121 @@ mp3 + pcm_zork
 adpcm_ima_wav + pcm_zork
 
 	  )
+return
+	  
 Meme2:
-; o3o s00n
+Gui, 2:Color, 884488, -caption
+Gui, 2:Add, Button, gBack x2 y16 w20 h410 , bAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcKBaCk
+Gui, 2:Add, Button, gUDP4 x442 y9 w90 h30 , DO IT
+Gui, 2:Add, Button, gUDP3 x332 y9 w90 h30 , DO IT
+Gui, 2:Add, Button, gUDP2 x222 y9 w90 h30 , DO IT
+Gui, 2:Add, Button, gUDP1 x112 y9 w90 h30 , DO IT
+Gui, 2:Add, Edit, x332 y39 w90 h20 vUDPvset3, -b:v 8888 -f avi
+Gui, 2:Add, Edit, x222 y39 w90 h20 vUDPvset2, -b:v 8888 -f avi
+Gui, 2:Add, Edit, x112 y39 w90 h20 vUDPvset1, -b:v 8888 -f avi
+Gui, 2:Add, Edit, x442 y39 w90 h20 vUDPvset4, -b:v 8888 -f avi
+Gui, 2:Add, DropDownList, x112 y59 w90 h20 vUDPvcodec1 Choose9, %List%
+Gui, 2:Add, DropDownList, x222 y59 w90 h21 vUDPvcodec2 Choose10, %List%
+Gui, 2:Add, DropDownList, x332 y59 w90 h21 vUDPvcodec3 Choose11, %List%
+Gui, 2:Add, DropDownList, x442 y59 w90 h21 vUDPvcodec4 Choose12, %List%
+Gui, 2:Add, Edit, x442 y79 w90 h20 vUDPaset4, -af volume=0.5
+Gui, 2:Add, DropDownList, x442 y99 w90 h21 vUDPacodec1 Choose17, %List2%
+Gui, 2:Add, Edit, x332 y79 w90 h20 vUDPaset3, -af volume=0.5
+Gui, 2:Add, DropDownList, x332 y99 w90 h21 vUDPacodec2 Choose18, %List2%
+Gui, 2:Add, Edit, x222 y79 w90 h20 vUDPaset2, -af volume=0.5
+Gui, 2:Add, DropDownList, x222 y99 w90 h21 vUDPacodec3 Choose19, %List2%
+Gui, 2:Add, Edit, x112 y79 w90 h20 vUDPaset1, -af volume=0.5
+Gui, 2:Add, DropDownList, x112 y99 w90 h21 vUDPacodec4 Choose20, %List2%
+Gui, 2:Add, Button, gUDP8 x442 y149 w90 h30 , DO IT
+Gui, 2:Add, Button, gUDP7 x332 y149 w90 h30 , DO IT
+Gui, 2:Add, Button, gUDP6 x222 y149 w90 h30 , DO IT
+Gui, 2:Add, Button, gUDP5 x112 y149 w90 h30 , DO IT
+Gui, 2:Add, Edit, x442 y179 w90 h20 vUDPvset5, -b:v 8888 -f avi
+Gui, 2:Add, DropDownList, x442 y199 w90 h20 vUDPvcodec5 Choose13, %List%
+Gui, 2:Add, Edit, x442 y219 w90 h20 vUDPaset8, -af volume=0.5
+Gui, 2:Add, DropDownList, x442 y239 w90 h21 vUDPacodec5 Choose20, %List2%
+Gui, 2:Add, Edit, x332 y179 w90 h20 vUDPvset6, -b:v 8888 -f avi
+Gui, 2:Add, DropDownList, x332 y199 w90 h21 vUDPvcodec6 Choose14, %List%
+Gui, 2:Add, Edit, x332 y219 w90 h20 vUDPaset7, -af volume=0.5
+Gui, 2:Add, DropDownList, x332 y239 w90 h21 vUDPacodec6 Choose20, %List2%
+Gui, 2:Add, Edit, x222 y179 w90 h20 vUDPvset7, -b:v 8888 -f avi
+Gui, 2:Add, Edit, x222 y219 w90 h20 vUDPaset6, -af volume=0.5
+Gui, 2:Add, DropDownList, x222 y199 w90 h21 vUDPvcodec7 Choose15, %List%
+Gui, 2:Add, DropDownList, x222 y239 w90 h21 vUDPacodec7 Choose20, %List2%
+Gui, 2:Add, Edit, x112 y179 w90 h20 vUDPvset8, -b:v 8888 -f avi
+Gui, 2:Add, DropDownList, x112 y199 w90 h21 vUDPvcodec8 Choose16, %List%
+Gui, 2:Add, Edit, x112 y219 w90 h20 vUDPaset5, -af volume=0.5
+Gui, 2:Add, DropDownList, x112 y239 w90 h20 vUDPacodec8 Choose20, %List2%
+Gui, 2:Add, GroupBox, x162 y279 w290 h140 , oWo Wats This?
+Gui, 2:Add, Text, x172 y309 w270 h90 , Spawn multiple FFMpeg instances that stream your stuff to udp://127.0.0.1:1337. Try mixing different codecs and formats into eachother for rad results :')                                                                                                                                        -f nut`, -f rawvideo`, -f alaw`, or -f mulaw                                     may help if -f avi breaks or fails
+; im gay lol
+Gui, 2:-Sysmenu
+Gui, 2:Show,W555 h444 , HERE COME DAT BOI... O SHIT WADDUP??!?!?!!!???!??!?!!!?!??!?!?!!?!?!??!?!??!?!!!?!?!?!??!?!!!??!??!?!?!?!?!?!
+Return
+
+
+Back:
+Gui, 1:Show
+Gui, 2:Destroy
+Return
+
+UDP1:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -re %UserInput% -vcodec %UDPvcodec1% %UDPvset1% -acodec %UDPacodec4% %UDPaset1% udp://127.0.0.1:1337 {Enter}
+return
+
+UDP2:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -re %UserInput% -vcodec %UDPvcodec2% %UDPvset2% -acodec %UDPacodec3% %UDPaset2% udp://127.0.0.1:1337 {Enter}
+return
+
+UDP3:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -re %UserInput% -vcodec %UDPvcodec3% %UDPvset3% -acodec %UDPacodec2% %UDPaset3% udp://127.0.0.1:1337 {Enter}
+return
+
+UDP4:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -re %UserInput% -vcodec %UDPvcodec4% %UDPvset4% -acodec %UDPacodec1% %UDPaset4% udp://127.0.0.1:1337 {Enter}
+return
+
+UDP5:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -re %UserInput% -vcodec %UDPvcodec8% %UDPvset8% -acodec %UDPacodec8% %UDPaset5% udp://127.0.0.1:1337 {Enter}
+return
+
+UDP6:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -re %UserInput% -vcodec %UDPvcodec7% %UDPvset7% -acodec %UDPacodec7% %UDPaset6% udp://127.0.0.1:1337 {Enter}
+return
+
+UDP7:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -re %UserInput% -vcodec %UDPvcodec6% %UDPvset6% -acodec %UDPacodec6% %UDPaset7% udp://127.0.0.1:1337 {Enter}
+return
+
+UDP8:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -re %UserInput% -vcodec %UDPvcodec5% %UDPvset5% -acodec %UDPacodec5% %UDPaset8% udp://127.0.0.1:1337 {Enter}
+return
+
+
 	  
 F8::Send, FFmpeg %UserInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% | ffplay -vcodec %Decoderchoice% -acodec %ADecoderchoice% -vf format=%Pixfmtdec% %DecoderSetting% -i - {Enter}
 F7::
