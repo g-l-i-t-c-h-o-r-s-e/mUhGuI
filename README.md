@@ -34,6 +34,10 @@ This version starts as soon as it's executed, so I bound some hotkeys to start/k
 
 [Set FFMpeg as an Enviroment Variable](http://www.wikihow.com/Install-FFmpeg-on-Windows/)
 
+[Sox Windows Build](https://sourceforge.net/projects/sox/files/sox/14.4.2/)
+
+[Sox Setup Help](https://github.com/JoFrhwld/FAVE/wiki/Sox-on-Windows)
+
 
 
 
