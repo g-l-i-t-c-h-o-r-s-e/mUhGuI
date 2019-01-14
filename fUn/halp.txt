@@ -25,6 +25,7 @@ So yeh, have fun guis.
 ^           F9        =  Corrupt Stream/ShittyWebcam      ^
 ^           F10       =      Kill ShittyWebcam            ^
 ^           F11       =         Kill FFplay               ^
+^           F12       =     Kill Command Prompts          ^
 ^         Alt+F12     =   Kill mUhGui/Emergency Exit      ^
 ^                                                         ^
 ^                                                         ^
