@@ -1,2 +1,12 @@
 #ShittyWebcam Source Added.
 #Updated GUI, added more UDP corruption last night.
+#Added default clipboard input
+#Added default values for GUI elements
+#Added clipboard and ffmpeg command logging + save commandline options
+#Fixed audiobending and videobending sections
+#Added optional SOX Sonification
+#Updated Sample Rate sliders
+#Added Native file browser Input
+#Added kill command line windows via F12 key (Alt + F12 for Emergency Exit)
+#ETC, ETC, ETC, check my crappy comments for more info I missed
+##More to come, need to add preset save and load option...
