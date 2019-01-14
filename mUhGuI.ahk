@@ -25,6 +25,7 @@ GuiWindow := WinExist()
 
 ; Launch hidden cmd.exe and store process ID in pid.
 Run, %ComSpec%,, Hide, pid
+WinSetTitle, %pid%,,NOKILL
 
 ; Wait for console window to be created, store its ID.
 DetectHiddenWindows, On
@@ -119,27 +120,82 @@ Game5 = %A_Index%
 }
  
 Loop,%Game5%
-    List6 .= Game%A_Index%  . "|" 	
+    List6 .= Game%A_Index%  . "|"
 
-InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, Pls Use -i And Enter Input File Path 4 Now..., , x400 y357 w70 h70,,,,,,-i
-Gui, Add, DropDownList,  x478 y357 w100 h88 vDecoderchoice Choose1, %List6%
-Gui, Add, DropDownList,  x378 y357 w110 h88 vEncoderchoice Choose1, %List%
+GameIndex := 6
+loop, read, fUn\soxfx.txt
+{
+Game%A_Index% := A_LoopReadLine
+Game6 = %A_Index%
+}
+ 
+Loop,%Game6%
+    List7 .= Game%A_Index%  . "|"
+
+	
+;convert clipboard into a dynamic variable and then apply transform to start GUI with clipboard input
+clipboardnew = "%clipboard%"
+transform, clipboardnew, Deref, %clipboardnew%
+InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, Update clipboard with the desired file and restart the GUI..., , x400 y357 w70 h70,,,,,,-i %clipboardnew%
+Gui, Add, DropDownList,  x478 y357 w100 h88 vDecoderchoice Choose140, %List6%
+Gui, Add, DropDownList,  x378 y357 w110 h88 vEncoderchoice Choose66, %List%
 Gui, Add, Text,x404 y389 w190 h20 ,uR vIdeO eNcOdErS n' dEcOdErS
 Gui, Add, Text, x122 y389 w170 h20 , uR aUdIo dEcOdErS n' eNcOdErS
-Gui, Add, DropDownList,  x200 y357 w115 h88 vADecoderchoice Choose2, %List3%
+Gui, Add, DropDownList,  x200 y357 w115 h88 vADecoderchoice Choose129, %List3%
+Gui, Add, Button, x326 y367 w40 h20  gSaveMe,Save
+;Gui, Add, Button, x356 y367 w40 h20  gPreset,Pre
 Gui, Add, Button, x302 y387 w90 h40  gChoose,Use Settings <3
 Gui, Add, Button, x77 y361 w8 h52  gMeme,KMS
 Gui, Add, Button, x57 y361 w8 h52  gMeme2,PLS
-Gui, Add, DropDownList,  x110 y357 w100 h88 vAEncoderchoice Choose2, %List2%
-Gui, Add, DropDownList,  x53 y418 w68 h88 vPixfmt Choose3, %List4%
-Gui, Add, DropDownList,  x578 y418 w68 h88 vPixfmtdec Choose4, %List5%
+Gui, Add, Button, x97 y361 w8 h52  gSaveIt,SAVE
+Gui, Add, DropDownList,  x110 y357 w100 h88 vAEncoderchoice Choose55, %List2%
+Gui, Add, DropDownList,  x53 y418 w68 h88 vPixfmt Choose20, %List4%
+Gui, Add, DropDownList,  x578 y418 w68 h88 vPixfmtdec Choose20, %List5%
 Gui,Show,,WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!! :'D
 Gui, Add, Edit, x410 y409 w140 h20 vDecoderSetting,-ar 4000 -af volume=0.5
-Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -strict -2 -f avi -
+Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -strict -2 -f avi
 Gui, Add, Button, x592 y362 w38 h22  gInput,Input
 Gui, Show
 return
 OK:
+return
+
+lel:
+PlayStream := "ffplay -vcodec %Decoderchoice% -acodec %ADecoderchoice% -vf format=%Pixfmtdec% %DecoderSetting% -i udp://127.0.0.1:1337?overrun_nonfatal=1"
+transform, PlayStream, Deref, %PlayStream%
+Run, cmd.exe
+sleep, 666
+Send, %PlayStream% {Enter}
+return
+
+kek:
+SendStream := "ffmpeg -re %UserInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% udp://127.0.0.1:1337"
+transform, SendStream, Deref, %SendStream%
+Run, cmd.exe
+sleep, 666
+Send, %SendStream% {Enter}
+return
+
+why:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffplay %UserInput% {Enter}
+return
+
+; Added native file browser, input flag and double quotes for filenames with spaces in them
+Input:
+FileSelectFile, UserInput
+AddQuoteToInput = "
+AddFFMpegInputFlagToCommand := "-i "
+UserInput = %AddFFMpegInputFlagToCommand%%AddQuoteToInput%%UserInput%%AddQuoteToInput%
+return
+
+SaveMe:
+AppendMe = `n%SendStream%`n%PlayStream%`n`n
+transform, AppendMe, Deref, %AppendMe%
+Fileappend,%AppendMe%,fUn\output\clip.txt
+Gui,Submit, Nohide
 return
 
 Choose:
@@ -159,47 +215,78 @@ Decoder Pixel Format = %Pixfmtdec%
 )
 return
 
-lel:
-Gui,Submit, Nohide
-Run, cmd.exe
-sleep, 666
-Send, ffplay -vcodec %Decoderchoice% -acodec %ADecoderchoice% -vf format=%Pixfmtdec% %DecoderSetting% -i udp://127.0.0.1:1337?overrun_nonfatal=1 {Enter}
-return
-
-kek:
-Gui,Submit, Nohide
-Run, cmd.exe
-sleep, 666
-Send, ffmpeg -re %UserInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% udp://127.0.0.1:1337 {Enter}
-return
-
-why:
-Gui,Submit, Nohide
-Run, cmd.exe
-sleep, 666
-Send, ffplay %UserInput% {Enter}
-return
-
-Input:
-InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, Pls Use -i And Enter Input File Path 4 Now..., , x400 y357 w70 h70,,,,,,-f lavfi -i "sine=frequency=55:sample_rate=888:duration=30"
-return
-
 Meme:
 Gui,Submit, Nohide
-Msgbox,
+Gui, 3:Color, 884488, -caption
+Gui, 3:Add, Button, gFugvideo x302 y279 w130 h60 , fUcKiNg dO iT
+; Fixed dropdownlist default values
+Gui, 3:Add, DropDownList, x42 y239 w130 h21 VvCompressor Choose68, %List%
+Gui, 3:Add, DropDownList, x302 y239 w130 h21 vBentAcodec Choose55, %List2%
+Gui, 3:Add, DropDownList, x42 y199 w130 h21 VAencodercodec Choose55, %List2%
+Gui, 3:Add, DropDownList, x302 y199 w130 h20 Choose68, %List%
+Gui, 3:Add, Edit, x302 y259 w130 h20 vAFilters , -af flanger,flanger
+Gui, 3:Add, Edit, x42 y259 w130 h20 VvFilters , -vf vflip`,hflip
+; removed sample rate boxes for now
+Gui, 3:Add, Edit, x42 y219 w130 h20 VaEncParam , -ss 00:01:30
+Gui, 3:Add, Edit, x302 y219 w130 h20 VvEncParam, -ss 00:00:30
+; Modified Boxes
+Gui, 3:Add, Edit, x432 y279 w40 h20 vOutputFmt , -f u8
+Gui, 3:Add, Edit, x432 y199 w40 h20 VInputFmt , -f u8
+Gui, 3:Add, Edit, x2 y199 w40 h20 VEncFmt , -f u8
+Gui, 3:Add, Edit, x2 y279 w40 h20 VDecFmt , -f u8
+Gui, 3:Add, Text, x52 y169 w100 h30 , Audio Bending Here
+Gui, 3:Add, Text, x322 y169 w100 h30 , Video Bending Here
+Gui, 3:Add, Button, gFugAudio x42 y279 w130 h60 , fUcKiNg dO iT
+; Added gInput here
+Gui, 3:Add, Button, gInput x2 y219 w40 h60 gInputa, Sauce
+Gui, 3:Add, Button, x432 y219 w40 h60 gInputv,Sauce
+Gui, 3:Add, DropDownList, x192 y209 w90 h10 VEffect1 Choose31, %List7%
+Gui, 3:Add, Edit, x182 y229 w110 h20 VFXParam1 , -n 9001
+Gui, 3:Add, Text, x212 y189 w40 h20 , SOX FX
+Gui, 3:Add, DropDownList, x192 y249 w90 h20 VEffect2 , %List7%
+Gui, 3:Add, Edit, x182 y269 w110 h20 VFXParam2 , 0.8 0.88 60 0.4
+Gui, 3:Add, DropDownList, x192 y289 w90 h10 VEffect3 , %List7%
+; Added Volume Slider
+Gui, 3:Add, Slider, x62 y359 w100 h20 Tooltip VFugAudioVol TickInterval2 Range0-10, 1
+Gui, 3:Add, Text, x2 y339 w60 h20 , Sample R8
+Gui, 3:Add, Slider, x312 y339 w100 h20 Tooltip VvDecSmplr8 TickInterval2 Range666-88100, 8000
+Gui, 3:Add, Slider, x312 y359 w100 h20 , 25
+Gui, 3:Add, Text, x422 y339 w60 h20 , Sample R8
+Gui, 3:Add, Slider, x62 y339 w100 h20 Tooltip VaDecSmplr8 TickInterval2 Range666-88100, 44100
+Gui, 3:Add, Text, x2 y359 w60 h20 , Volume
+Gui, 3:Add, Text, x422 y359 w60 h20 , Volume
+Gui, 3:Add, Button, x2 y159 w40 h40 gSaveFugAudio,Save
+Gui, 3:Add, Button, x432 y159 w40 h40 gSaveFugVideo,Save
+Gui, 3:Add, GroupBox, x12 y9 w440 h60 , *notices GUI* oWo Wats This?~
+Gui, 3:Add, Text, x32 y29 w410 h30 , Pretty much a groovy way to kinda trick ffmpeg to sonify video`, compress audio data with video codecs`, process audio with video effects`, etc in real time... (and with SOX)
+Gui, 3:Add, Button, x282 y249 w10 h20 , ?
+Gui, 3:Add, Button, x182 y249 w10 h20 , ?
+; Added Channel Count
+Gui, 3:Add, DropDownList, x2 y319 w40 h21 vChanCount2 Choose2, 1|2|3|4|5||6|7|8|9|10
+Gui, 3:Add, DropDownList, x2 y299 w40 h20 vChanCount1 Choose2, 1|2|3|4|5||6|7|8|9|10
+Gui, 3:Add, DropDownList, x432 y299 w40 h20  vChanCount4 Choose2, 1|2|3|4|5||6|7|8|9|10
+Gui, 3:Add, DropDownList, x432 y319 w40 h21 vChanCount3 Choose2, 1|2|3|4|5||6|7|8|9|10
+Gui, 3:Add, Edit, x182 y309 w110 h20 VFXParam3 , 17
+;Added Checkbox for SOX
+Gui, 3:Add, Checkbox, x195 y330 w110 h20 vSoxVar gEnableSox, Enable Sox?
+Gui, 3:Add, Button, gBack2 x2 y379 w470 h10 , bAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcK
+Gui, 3:Add, Edit, x202 y159 w70 h20 VGlobalRes , -s 640x360
+Gui, 3:Add, GroupBox, x192 y129 w90 h60 , Global Resolution
+; Yeah you like that dontcha bitch ;)
+Gui, 3:Show, x328 y144 h395 w477, ITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENING
+Gui, 3:-Sysmenu
+Return
 
-(
-A Few Examples:
+Back2:
+Gui, 1:Show
+Gui, 3:Destroy
+Return
 
-r210 + avrp
-dvvideo + vp5
-v308 + kgv1
-cavs + bfi
-pcm_alaw + sipr
-mp3 + pcm_zork 
-adpcm_ima_wav + pcm_zork
-
-	  )
+SaveIt:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -vcodec %Decoderchoice% -an  -i udp://127.0.0.1:1337?overrun_nonfatal=1 -vcodec ffvhuff -f avi -y fUn/ayylmao.avi -f nut - | ffplay - {Enter}
 return
 	  
 Meme2:
@@ -258,6 +345,53 @@ Gui, 1:Show
 Gui, 2:Destroy
 Return
 
+FugVideo:
+transform, AllowSox, Deref, %AllowSox%
+Gui,Submit, Nohide
+Run, %ComSpec%,,,pid2
+sleep, 666
+Send, ffmpeg %UserInput% %vEncParam% -f rawvideo -pix_fmt %Pixfmt% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4% -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffplay -f rawvideo %GlobalRes% -pix_fmt %Pixfmtdec% -i - {Enter}
+return
+
+SaveFugVideo:
+transform, AllowSox, Deref, %AllowSox%
+sfv := "ffmpeg %UserInput% %vEncParam% -f rawvideo -pix_fmt %Pixfmt% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %Pixfmtdec% -i - -c:v h263p -q:v 0 -y fUn/output/test.avi"
+transform, sfv, Deref, %sfv%
+Gui,Submit, Nohide
+Run, %ComSpec%,,,pid2
+sleep, 666
+Send, %sfv% {Enter}
+AppendMe1 = %sfv%`n`n
+Fileappend,%AppendMe1%,fUn\output\clip.txt
+return
+
+FugAudio:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg %UserInput% -acodec %Aencodercodec% %aEncParam% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %Pixfmt% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo - | ffplay -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% {Enter}
+return
+
+SaveFugAudio:
+sfa := "ffmpeg %UserInput% -acodec %Aencodercodec% %aEncParam% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %Pixfmt% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo - | ffmpeg -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% -y fUn/output/test.wav"
+transform, sfa, Deref, %sfa%
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, %sfa% {Enter}
+AppendMe = %sfa%`n`n
+Fileappend,%AppendMe%,fUn\output\clip.txt
+return
+
+;Added new input boxes
+Inputv:
+InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, Pls Use -i And Enter Input File Path 4 Now..., , x400 y357 w70 h70,,,,,,-f lavfi -i testsrc2
+return
+
+Inputa:
+InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, Pls Use -i And Enter Input File Path 4 Now..., , x400 y357 w70 h70,,,,,,-f lavfi -i "sine=frequency=55:sample_rate=888:duration=30"
+return
+
 UDP1:
 Gui,Submit, Nohide
 Run, cmd.exe
@@ -315,16 +449,38 @@ Send, ffmpeg -re %UserInput% -vcodec %UDPvcodec5% %UDPvset5% -acodec %UDPacodec5
 return
 
 
+;Moved EnableSox down here because of GUI issues lmao idek what im doing anymore
+EnableSox:
+GuiControlGet, SoxVar
+if SoxVar = 0
+AllowSox := ""
+else
+AllowSox := "| sox -V1 -t raw -b 8 --encoding unsigned-integer -c 1 -r 44.1k - -b 8 --encoding unsigned-integer -c 1 -t raw - %Effect1% %FXParam1% %Effect2% %FXParam2% %Effect3% %FXParam3%"
+; This transform option here allows variables within this local string
+transform, AllowSox, Deref, %AllowSox%
+Gui,Submit, Nohide
+return
+
+
 	  
 F8::Send, FFmpeg %UserInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% | ffplay -vcodec %Decoderchoice% -acodec %ADecoderchoice% -vf format=%Pixfmtdec% %DecoderSetting% -i - {Enter}
 F7::
 Send, cd fUn {Enter}
 Sleep 500, 
 Send, "ffmglitch-Input Version.bat" {Enter}
-F6::Fileappend,%clipboardall%,C:\clip.txt
+F6:: ; TESTING CLIPBOARD SHIT
+AppendMe = %clipboard%`n`n
+Fileappend,%AppendMe%,fUn\output\clip.txt
+return
 F9::Run, fUn/ShittyWebcam.exe,,Hide ; orginally made by a friend to corrupt my streams in realtime ; sends random udp data to 127.0.0.1:1337 ; Will release sauce once we find it
 F10::Process,Close, ShittyWebcam.exe
+return
 F11::Process,Close, ffplay.exe ; get that shit outta here
+; If '%ComSpec%' doesnt work as a variable try using 'C:\Windows\system32\cmd.exe' instead
+SetTitleMatchMode, 2
+F12::
+WinClose, %ComSpec%
+return
 toggle = 0
 #MaxThreadsPerHotkey 2
 
@@ -335,7 +491,10 @@ F5:: ; Use with FFplay or pReViEw with a databent compressed video for best resu
         sleep 35
     }
 return
-$!F12::ExitApp
+$!F12:: ; Added the cmd.exe pid to the emergency exit hotkey to fix hanging processes
+Process, Close, %pid%
+ExitApp
+return
 
 ; Be sure to close cmd.exe later.
 OnExit, Exiting
@@ -344,8 +503,7 @@ OnExit, Exiting
 Process, WaitClose, %pid%
 
  
-GuiEsape:
-GuiClose:
+GuiEscape:
 ButtonOK:
 Exiting:
 OnExit
