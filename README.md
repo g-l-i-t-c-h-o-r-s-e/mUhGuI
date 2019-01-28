@@ -1,7 +1,7 @@
 # mUhGuI
 A Shitty Command Line and FFMpeg GUI made for 
 G L I T C H I N G
-
+![main](https://i.imgur.com/Y6y4VSg.png)
 Basically were just misinterpreting data in realtime, which I personally consider a "glitch" :p
 Anywhore uncompressed formats work the best together, different pixel formats can spice things up, too.
 Let your i m a g i n a t i o n run wild.
