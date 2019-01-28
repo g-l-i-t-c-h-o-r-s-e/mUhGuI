@@ -10,3 +10,12 @@
 #Added kill command line windows via F12 key (Alt + F12 for Emergency Exit)
 #ETC, ETC, ETC, check my crappy comments for more info I missed
 ##More to come, need to add preset save and load option...
+#Added most MultiChannel Sonification
+#Added gif, image, and video detection for specific looping options in multichannel sonification
+#Added get input resolution function
+#Added shuffle channel layout order for multisonification
+#Updated GUI layout
+#Updated Default values
+#Added New functions
+#Added background function
+##I probably forgot some things to mention, etc. Adding InfiniFilter soon.
