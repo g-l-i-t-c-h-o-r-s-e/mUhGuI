@@ -1,7 +1,8 @@
 yuv420p
 yuyv422
-rgb24
+
 bgr24
+rgb24
 yuv422p
 yuv444p
 yuv410p
