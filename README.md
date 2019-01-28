@@ -1,7 +1,6 @@
 # mUhGuI
 An EZ Command Line and FFMpeg GUI made for 
 G L I T C H I N G
-![main](https://i.imgur.com/Y6y4VSg.png)
 Basically were just misinterpreting data in realtime, which I personally consider a "glitch" :p
 Anywhore uncompressed formats work the best together, different pixel formats can spice things up, too.
 Let your i m a g i n a t i o n run wild.
@@ -10,6 +9,7 @@ Some Codec combinations could actually deafen you, lower your shizzit. Some form
 I've included a compiled version if you don't have or wan't to install AutoHotKey.
 
 Pls hit me up if you have any ideas or issues! :>
+![main](https://i.imgur.com/Y6y4VSg.png)
 
 
 Because I suck, I don't remember the exact combination for the first one, but check it out.
