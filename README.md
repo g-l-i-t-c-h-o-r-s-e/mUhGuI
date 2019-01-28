@@ -1,5 +1,5 @@
 # mUhGuI
-A Shitty Command Line and FFMpeg GUI made for 
+An EZ Command Line and FFMpeg GUI made for 
 G L I T C H I N G
 ![main](https://i.imgur.com/Y6y4VSg.png)
 Basically were just misinterpreting data in realtime, which I personally consider a "glitch" :p
