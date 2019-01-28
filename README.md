@@ -2,9 +2,6 @@
 A Shitty Command Line and FFMpeg GUI made for 
 G L I T C H I N G
 
-J̶u̶s̶t̶ ̶g̶o̶n̶n̶a̶ ̶s̶a̶y̶ ̶r̶i̶g̶h̶t̶ ̶n̶o̶w̶ ̶I̶ ̶c̶a̶n̶'̶t̶ ̶t̶a̶k̶e̶ ̶f̶u̶l̶l̶ ̶c̶r̶e̶d̶i̶t̶.̶ ̶J̶u̶s̶t̶ ̶a̶n̶ ̶e̶d̶i̶t̶ ̶o̶f̶ ̶a̶n̶ ̶a̶u̶t̶o̶h̶o̶t̶k̶e̶y̶ ̶s̶c̶r̶i̶p̶t̶ ̶I̶ ̶f̶o̶u̶n̶d̶ ̶t̶h̶a̶t̶ ̶w̶r̶a̶p̶s̶ ̶a̶ ̶b̶l̶a̶n̶k̶ ̶G̶U̶I̶ ̶a̶r̶o̶u̶n̶d̶ ̶C̶o̶m̶m̶a̶n̶d̶ ̶P̶r̶o̶m̶p̶t̶.̶    Ive come a LONG way since then and can claim I did this all myself now <3 
-
-
 Basically were just misinterpreting data in realtime, which I personally consider a "glitch" :p
 Anywhore uncompressed formats work the best together, different pixel formats can spice things up, too.
 Let your i m a g i n a t i o n run wild.
