@@ -148,7 +148,7 @@ Gui, Add, DropDownList,  x53 y418 w68 h88 vPixfmt Choose29, %List4%
 Gui, Add, DropDownList,  x578 y418 w68 h88 vPixfmtdec Choose29, %List5%
 Gui,Show,,WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!! :'D
 Gui, Add, Edit, x410 y409 w140 h20 vDecoderSetting,-ar 4000 -af volume=0.5
-Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -strict -2 -f avi -s 640x360
+Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -strict -2 -f nut -s 640x360
 Gui, Add, Button, x592 y362 w38 h22  gInput,Input
 Gui Add, Picture, x-1 y-2 w659 h325 +BackgroundTrans, C:\Users\Execute\Desktop\mUhGuI-master\fUn\overlay.png
 Gui Add, Picture, x-48 y-56 w710 h385 0x6 +Border, %A_ScriptDir%\fUn\background.png
@@ -529,8 +529,8 @@ Gui 4:Add, Radio, x4 y5 w75 h23 g3chan, 3 Channel
 Gui 4:Add, Radio, x4 y28 w75 h23 g4chan, 4 Channel
 Gui 4:Add, Radio, x4 y51 w75 h23 g6Chan, 6 Channel
 Gui 4:Add, Radio, x4 y74 w75 h23 g8Chan, 8 Channel
-Gui 4:Add, Radio, x4 y97 w75 h23 g12Chan, 1̶2̶c̶h̶a̶n̶n̶e̶l̶
-Gui 4:Add, Radio, x4 y120 w75 h23, 1̶6̶c̶h̶a̶n̶n̶e̶l̶
+Gui 4:Add, Radio, x4 y97 w75 h23 g12Chan, 12 Channel?
+Gui 4:Add, Radio, x4 y120 w75 h23, 16 Channel?
 Gui 4:Show, w100 h147, Pick Your Poison <3
 Gui, 4:-Sysmenu
 Return
@@ -2245,10 +2245,9 @@ Process, WaitClose, %pid%
 
 
 GuiClose:
-Gui, Destroy
+GoSub, GuiEscape
 return
 2GuiClose:
-Gui, 2:Destroy
 return
 3GuiClose:
 Gui, 4:Destroy
