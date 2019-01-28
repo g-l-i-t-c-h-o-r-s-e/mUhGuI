@@ -529,8 +529,8 @@ Gui 4:Add, Radio, x4 y5 w75 h23 g3chan, 3 Channel
 Gui 4:Add, Radio, x4 y28 w75 h23 g4chan, 4 Channel
 Gui 4:Add, Radio, x4 y51 w75 h23 g6Chan, 6 Channel
 Gui 4:Add, Radio, x4 y74 w75 h23 g8Chan, 8 Channel
-Gui 4:Add, Radio, x4 y97 w75 h23 g12Chan, 12 Channel?
-Gui 4:Add, Radio, x4 y120 w75 h23, 16 Channel?
+Gui 4:Add, Radio, x4 y97 w75 h23 g12Chan, 12 n/a
+Gui 4:Add, Radio, x4 y120 w75 h23, 16 n/a
 Gui 4:Show, w100 h147, Pick Your Poison <3
 Gui, 4:-Sysmenu
 Return
