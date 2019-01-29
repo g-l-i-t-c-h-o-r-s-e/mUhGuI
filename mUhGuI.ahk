@@ -150,7 +150,7 @@ Gui,Show,,WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!! :'D
 Gui, Add, Edit, x410 y409 w140 h20 vDecoderSetting,-ar 4000 -af volume=0.5
 Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -strict -2 -f avi -s 640x360
 Gui, Add, Button, x592 y362 w38 h22  gInput,Input
-Gui Add, Picture, x-1 y-2 w659 h325 +BackgroundTrans, C:\Users\Execute\Desktop\mUhGuI-master\fUn\overlay.png
+Gui Add, Picture, x-1 y-2 w659 h325 +BackgroundTrans, %A_ScriptDir%\fUn\overlay.png
 Gui Add, Picture, x-48 y-56 w710 h385 0x6 +Border, %A_ScriptDir%\fUn\background.png
 
 
