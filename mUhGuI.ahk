@@ -2,132 +2,140 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-Quote = "
+
+Quote = " ; Damn Windows not letting me escape characters
+ActivateBinaryVar = 0 ; NEED THIS
 
 ;Make Backround via ffmpeg corruption filter aka "noise"
 Random, randNum, 50, 3000
-Random, randNum2, 1000, 20000
+Random, randNum2, 1000, 2000
 Random, randNum3, 1, 30
-;msgbox, %randNum%
 Array := ["msvideo1", "jpegls", "libxavs", "libvpx", "libtheora", "zmbv", "libopenjpeg"]
 Random, randint, 2, % Array.MaxIndex()
 Codec := Array[randint]
-;msgbox, %Codec%
+;msgbox, Codec=%Codec%`nNoise=%randNum%`nDropAmount=%randNum2% ;Display Codec and noise bitstream filter values at startup
 
 makeBack :=
 (
-"ffmpeg -ss %randNum3% -f lavfi -i testsrc2=s=640x360 -f avi -q:v 0 -vf eq=contrast=-1 -c:v %Codec% -bsf noise=%randNum%:dropamount=%randNum2% -frames 1 - | ffmpeg -f avi  -i - %A_ScriptDir%\fUn\background.png -y"
+"ffmpeg -ss %randNum3% -f lavfi -i testsrc2=s=640x360 -f avi -q:v 0 -vcodec %Codec% -bsf noise=%randNum%:dropamount=%randNum2% -frames 1 - | ffmpeg -f avi  -i - -i %A_ScriptDir%\fUn\overlay.png -filter_complex %Quote%[1:v]null[1];[0:v][1]overlay=x=20:y=20[a]%Quote% -map [a]  %A_ScriptDir%\fUn\background.bmp -y"
 )
 transform, makeBack, Deref, %makeBack%
-;msgbox, %randNum% %randNum2%
 runwait, cmd.exe /c %makeBack%,,Hide, pid
 
+;Make dropdownlist arrays, fuk u Skitty my indentation looks pretty
+ArrayListIndex := 0
+ loop, read, fUn\vcodecs.txt
+ {
+  ArrayList%A_Index% := A_LoopReadLine
+   ArrayList0 = %A_Index%
+    }
+     Loop,%ArrayList0%
+      List .= ArrayList%A_Index%  . "|" 
 
-GameIndex := 0
-loop, read, fUn\vcodecs.txt
-{
-Game%A_Index% := A_LoopReadLine
-Game0 = %A_Index%
-}
- 
-Loop,%Game0%
-    List .= Game%A_Index%  . "|" 
+       ArrayListIndex := 1
+       loop, read, fUn\acodecs.txt
+        {
+         ArrayList%A_Index% := A_LoopReadLine
+          ArrayList1 = %A_Index%
+           }
+            Loop,%ArrayList1%
+             List2 .= ArrayList%A_Index%  . "|" 
+	
+              ArrayListIndex := 2
+               loop, read, fUn\adecoders.txt
+                {
+                 ArrayList%A_Index% := A_LoopReadLine
+                  ArrayList2 = %A_Index%
+                   }
+                    Loop,%ArrayList2%
+                     List3 .= ArrayList%A_Index%  . "|" 	
+	
+                      ArrayListIndex := 3
+                       loop, read, fUn\pixfmts.txt
+                        {
+                         ArrayList%A_Index% := A_LoopReadLine
+                          ArrayList3 = %A_Index%
+                           }
+                            Loop,%ArrayList3%
+                             List4 .= ArrayList%A_Index%  . "|" 		
+	
+                             ArrayListIndex := 4
+                             loop, read, fUn\pixfmts.txt
+                             {
+                            ArrayList%A_Index% := A_LoopReadLine
+                           ArrayList4 = %A_Index%
+                          }
+                         Loop,%ArrayList4%
+                        List5 .= ArrayList%A_Index%  . "|" 
 
-GameIndex := 1
-loop, read, fUn\acodecs.txt
-{
-Game%A_Index% := A_LoopReadLine
-Game1 = %A_Index%
-}
+                       ArrayListIndex := 5
+                      loop, read, fUn\vdecoders.txt
+                     {
+                   ArrayList%A_Index% := A_LoopReadLine
+                  ArrayList5 = %A_Index%
+                 }
+                Loop,%ArrayList5%
+               List6 .= ArrayList%A_Index%  . "|"
  
-Loop,%Game1%
-    List2 .= Game%A_Index%  . "|" 
+              ArrayListIndex := 6
+             loop, read, fUn\soxfx.txt
+            {
+           ArrayList%A_Index% := A_LoopReadLine
+          ArrayList6 = %A_Index%
+         }
+        Loop,%ArrayList6%
+       List7 .= ArrayList%A_Index%  . "|"
 	
-GameIndex := 2
-loop, read, fUn\adecoders.txt
-{
-Game%A_Index% := A_LoopReadLine
-Game2 = %A_Index%
-}
- 
-Loop,%Game2%
-    List3 .= Game%A_Index%  . "|" 	
-	
-GameIndex := 3
-loop, read, fUn\pixfmts.txt
-{
-Game%A_Index% := A_LoopReadLine
-Game3 = %A_Index%
-}
- 
-Loop,%Game3%
-    List4 .= Game%A_Index%  . "|" 		
-	
-GameIndex := 4
-loop, read, fUn\pixfmts.txt
-{
-Game%A_Index% := A_LoopReadLine
-Game4 = %A_Index%
-}
- 
-Loop,%Game4%
-    List5 .= Game%A_Index%  . "|" 
+      ArrayListIndex := 7
+     loop, read, fUn\afilters.txt
+    {
+   ArrayList%A_Index% := A_LoopReadLine
+  ArrayList7 = %A_Index%
+ } 
+Loop,%ArrayList7%
+List8 .= ArrayList%A_Index%  . "|"
 
-GameIndex := 5
-loop, read, fUn\vdecoders.txt
-{
-Game%A_Index% := A_LoopReadLine
-Game5 = %A_Index%
-}
- 
-Loop,%Game5%
-    List6 .= Game%A_Index%  . "|"
 
-GameIndex := 6
-loop, read, fUn\soxfx.txt
-{
-Game%A_Index% := A_LoopReadLine
-Game6 = %A_Index%
-}
- 
-Loop,%Game6%
-    List7 .= Game%A_Index%  . "|"
-	
-	GameIndex := 7
-loop, read, fUn\afilters.txt
-{
-Game%A_Index% := A_LoopReadLine
-Game7 = %A_Index%
-}
- 
-Loop,%Game7%
-    List8 .= Game%A_Index%  . "|"
-	
-
-;Need to update here; if advapi32\MD5Ini doesnt exist to use a native AHK function instead. (For Window 10 Issues)
+; if advapi32\MD5Init doesnt exist use a native Binary function instead. (For Window 10 Issues)
 data = %A_Sec%%A_Min%%A_Hour%
-md5filename := MD5(data,StrLen(data))
+makefilename := MD5(data,StrLen(data))
 MD5( ByRef V, L=0 ) {
  VarSetCapacity( MD5_CTX,104,0 ), DllCall( "advapi32\MD5Init", Str,MD5_CTX ) 
  DllCall( "advapi32\MD5Update", Str,MD5_CTX, Str,V, UInt,L ? L : VarSetCapacity(V) ) 
  DllCall( "advapi32\MD5Final", Str,MD5_CTX ) 
  Loop % StrLen( Hex:="123456789ABCDEF0" ) 
-  N := NumGet( MD5_CTX,87+A_Index,"Char"), MD5 .= SubStr(Hex,N>>4,1) . SubStr(Hex,N&15,1) 
-Return MD5 
+  N := NumGet( MD5_CTX,87+A_Index,"Char"), MD5 .= SubStr(Hex,N>>4,1) . SubStr(Hex,N&15,1)
+  if ErrorLevel {
+  msgbox, `n(This may be unstable)`nOh shiet you're on windows 10?`n(Or you're missing Windows MD5 shit)`nFalling back to Binary filename method.
+  ;if (Var > 2) Break, BinaryPls
+  ;goSub BinaryPls
+  global ActivateBinaryVar = 1 ;THIS IS THE SWEET SPOT FOR ENABLING BINARY FILENAME SYSTEM, if not manually i guess.
+  }
+  else  
+Return MD5
+}
+
+;THIS BE THE BINARY FUNCTIONZ
+TxtToBin(txt) {
+ Loop Parse, txt
+  Loop 2
+   bin := bin (Asc(A_LoopField) >> (2 - A_Index) & 1)
+   StringTrimLeft, bin, bin, 10
+  global makefilename = bin
+Return Bin
 }
 
 Process, Close, ffmpeg.exe ;close backgound image generation process
 Process, Close, %pid% ;close backgound image generation process
 Process, Close, cmd.exe ;close backgound image generation process
 
-
+Gui, Color, 884488
 clipboardnew = "%clipboard%" ;convert clipboard into a dynamic variable and then apply transform to start GUI with clipboard input
 transform, clipboardnew, Deref, %clipboardnew%
-InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, Update clipboard with the desired file and restart the GUI..., , x400 y357 w70 h70,,,,,,-i %clipboardnew%
-Gui, Color, 884488
-Gui, Add, Button, x8 y360 w38 h30  glel,ffplay
-Gui, Add, Button, x8 y399 w38 h40 gkek,stream
-Gui, Add, Button, x585 y390 w53 h22 gwhy,pReViEw
+InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, Update clipboard with the desired file and restart the GUI...`n Or just go on your happy way doing what you were doing, , x400 y357 w70 h70,,,,,,-i %clipboardnew%
+Gui, Add, Button, x8 y360 w38 h30  gPlayMyStream,ffplay
+Gui, Add, Button, x8 y399 w38 h40 gSendMyStream,stream
+Gui, Add, Button, x585 y390 w53 h22 gPreviewPls,pReViEw
 Gui, Add, DropDownList,  x478 y357 w100 h88 vDecoderchoice Choose140, %List6%
 Gui, Add, DropDownList,  x378 y357 w110 h88 vEncoderchoice Choose66, %List%
 Gui, Add, Text, BackgroundTrans x404 y389 w190 h20 , Video Encoders && Decoders
@@ -135,12 +143,13 @@ Gui, Add, Text, BackgroundTrans x122 y389 w170 h20 , Audio Decoders && Encoders
 Gui, Add, DropDownList,  x200 y357 w115 h88 vADecoderchoice Choose157, %List3%
 Gui, Add, Button, x326 y367 w40 h20  gSaveMe,Save
 ;Gui, Add, Button, x356 y367 w40 h20  gPreset,Pre
-Gui, Add, Button, x302 y387 w90 h40  gChoose,Use Settings <3
-Gui, Add, Button, x325 y425 w40 h15 gLocalGlitch,LOCAL
+Gui, Add, Button, x302 y387 w90 h40  gChoose,[DEPRICATED]`nMore Soon
+Gui, Add, Button, x325 y427 w40 h15 gLocalGlitch,LOCAL
 Gui, Add, Button, x77 y361 w8 h52  gMeme,KMS
-Gui, Add, Button, x25 y342 w52 h14  gMultiChannel,MULTI
+Gui, Add, Button, x32 y342 w52 h14  gMultiChannel,MULTI
 Gui, Add, CheckBox, x2 y342 w10 h14 vBatchVar gEnableBatchMode, test
 Gui, Add, CheckBox, x2 y330 w10 h14 vEnableCleanUpModeVar gEnableCleanUpMode, test
+Gui, Add, CheckBox, x15 y330 w10 h14 vEnableBinaryVar gEnableBinaryMode, test
 Gui, Add, Button, x57 y361 w8 h52  gMeme2,PLS
 Gui, Add, Button, x97 y361 w8 h52  gSaveIt,SAVE
 Gui, Add, DropDownList,  x110 y357 w100 h88 vAEncoderchoice Choose68, %List2%
@@ -148,20 +157,38 @@ Gui, Add, DropDownList,  x53 y418 w68 h88 vPixfmt Choose29, %List4%
 Gui, Add, DropDownList,  x578 y418 w68 h88 vPixfmtdec Choose29, %List5%
 Gui,Show,,WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!! :'D
 Gui, Add, Edit, x410 y409 w140 h20 vDecoderSetting,-ar 4000 -af volume=0.5
-Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -strict -2 -f avi -s 640x360
+Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -f avi -s 640x360
 Gui, Add, Button, x592 y362 w38 h22  gInput,Input
-Gui Add, Picture, x-1 y-2 w659 h325 +BackgroundTrans, %A_ScriptDir%\fUn\overlay.png
-Gui Add, Picture, x-48 y-56 w710 h385 0x6 +Border, %A_ScriptDir%\fUn\background.png
-
-
+;Gui Add, Picture, x-1 y-2 w659 h325 +BackgroundTrans, %A_ScriptDir%\fUn\overlay.png
+Gui Add, Picture, x-48 y-56 w710 h385 0x6 +Border, %A_ScriptDir%\fUn\background.bmp
 Gui, Show
-return
+
 OK:
+return
+
+BinaryPls:
+;DOITVAR = BinaryPls
+BinArray = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
+Sort, BinArray, Random D,
+BinStr := RegExReplace(BinArray, ",")
+Text = %BinStr%
+Bin := TxtToBin(Text)
+makefilename := TxtToBin(Text)
 return
 
 EnableCleanUpMode:
 GuiControlGet, EnableCleanUpModeVar
-msgbox, Clean Up Mode Enabled!!
+if (EnableCleanUpModeVar = 0) {
+msgbox, Clean Up Mode Disabled!
+}
+else {
+}
+if (EnableCleanUpModeVar = 1) {
+msgbox, Clean Up Mode Enabled!
+}
+else {
+;no
+}
 return
 
 EnableBatchMode:
@@ -181,6 +208,24 @@ if (BatchVar = 1) {
 ;IsBatch := "echo"
 ;BatchCommand := " > run.bat"
 msgbox, Batch Mode Enabled!
+}
+else {
+;no
+}
+return
+
+EnableBinaryMode:
+GuiControlGet, EnableBinaryVar
+
+if (EnableBinaryVar = 0) {
+ActivateBinaryVar = 0
+msgbox, Binary Mode Disabled!
+}
+else {
+}
+if (EnableBinaryVar = 1) {
+ActivateBinaryVar = 1
+msgbox, Binary Mode Enabled!
 }
 else {
 ;no
@@ -211,7 +256,8 @@ transform, AppendMePls, Deref, %AppendMePls%
 Fileappend,%AppendMePls%,fUn\output\log.txt
 return
 
-lel:
+PlayMyStream:
+Gui,Submit, Nohide
 PlayStream := "ffplay -vcodec %Decoderchoice% -acodec %ADecoderchoice% -vf format=%Pixfmtdec% %DecoderSetting% -i udp://127.0.0.1:1337?overrun_nonfatal=1"
 transform, PlayStream, Deref, %PlayStream%
 Run, cmd.exe
@@ -219,7 +265,8 @@ sleep, 666
 Send, %PlayStream% {Enter}
 return
 
-kek:
+SendMyStream:
+Gui,Submit, Nohide
 SendStream := "ffmpeg -re %UserInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% udp://127.0.0.1:1337"
 transform, SendStream, Deref, %SendStream%
 Run, cmd.exe
@@ -227,12 +274,13 @@ sleep, 666
 Send, %SendStream% {Enter}
 return
 
-why:
-extension = gif
+PreviewPls:
 Gui,Submit, Nohide
+extension = gif
 AllowLoop := "-loop 0"
 IfInString, UserInput, %extension% ; check if file extension is gif, if so use alternate loop option
 {
+Gui,Submit, Nohide
 AllowLoop := "-ignore_loop 0"
 Run, cmd.exe /k "ffplay %AllowLoop% %UserInput%"
 ;newinput3 := UserInput ; this might also cause bug!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -254,6 +302,7 @@ AppendMe = `n%SendStream%`n%PlayStream%`n`n
 transform, AppendMe, Deref, %AppendMe%
 Fileappend,%AppendMe%,fUn\output\log.txt
 Gui,Submit, Nohide
+msgbox, Saved to output/log.txt
 return
 
 Choose:
@@ -285,8 +334,8 @@ Gui, 3:Add, DropDownList, x302 y199 w130 h20 Choose68, %List%
 Gui, 3:Add, Edit, x302 y259 w130 h20 vAFilters , -af flanger,flanger
 Gui, 3:Add, Edit, x42 y259 w130 h20 VvFilters , -vf vflip`,hflip
 ; removed sample rate boxes for now
-Gui, 3:Add, Edit, x42 y219 w130 h20 VaEncParam , -ss 00:01:30
-Gui, 3:Add, Edit, x302 y219 w130 h20 VvEncParam, -ss 00:00:30
+Gui, 3:Add, Edit, x42 y219 w130 h20 VaEncParam , -ss 00:00:00
+Gui, 3:Add, Edit, x302 y219 w130 h20 VvEncParam, -ss 00:00:00
 ; Modified Boxes
 Gui, 3:Add, Edit, x432 y279 w40 h20 vOutputFmt , -f u8
 Gui, 3:Add, Edit, x432 y199 w40 h20 VInputFmt , -f u8
@@ -302,7 +351,8 @@ Gui, 3:Add, DropDownList, x192 y209 w90 h10 VEffect1 Choose31, %List7%
 Gui, 3:Add, Edit, x182 y229 w110 h20 VFXParam1 , -n 9001
 Gui, 3:Add, Text, x212 y189 w40 h20 , SOX FX
 Gui, 3:Add, DropDownList, x192 y249 w90 h20 VEffect2 , %List7%
-Gui, 3:Add, Edit, x182 y269 w110 h20 VFXParam2 , 0.8 0.88 60 0.4
+Gui, 3:Add, Edit, x182 y269 w110 h20 VFXParam2 , ;0.8 0.88 60 0.4
+Gui, 3:Add, Edit, x182 y309 w110 h20 VFXParam3 , ;17
 Gui, 3:Add, DropDownList, x192 y289 w90 h10 VEffect3 , %List7%
 ; Added Volume Slider
 Gui, 3:Add, Slider, x62 y359 w100 h20 Tooltip VFugAudioVol TickInterval2 Range0-10, 1
@@ -324,7 +374,6 @@ Gui, 3:Add, DropDownList, x2 y319 w40 h21 vChanCount2 Choose2, 1|2|3|4|5||6|7|8|
 Gui, 3:Add, DropDownList, x2 y299 w40 h20 vChanCount1 Choose2, 1|2|3|4|5||6|7|8|9|10
 Gui, 3:Add, DropDownList, x432 y299 w40 h20  vChanCount4 Choose2, 1|2|3|4|5||6|7|8|9|10
 Gui, 3:Add, DropDownList, x432 y319 w40 h21 vChanCount3 Choose2, 1|2|3|4|5||6|7|8|9|10
-Gui, 3:Add, Edit, x182 y309 w110 h20 VFXParam3 , 17
 ;Added Checkbox for SOX
 Gui, 3:Add, Checkbox, x195 y330 w110 h20 vSoxVar gEnableSox, Enable Sox?
 Gui, 3:Add, Button, gBack2 x2 y379 w470 h10 , bAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcK
@@ -405,7 +454,7 @@ Return
 
 FugVideo:
 transform, AllowSox, Deref, %AllowSox%
-Gui,Submit, Nohide
+Gui, Submit, Nohide
 Run, %ComSpec%,,,pid2
 sleep, 666
 Send, ffmpeg %UserInput% %vEncParam% -f rawvideo -pix_fmt %Pixfmt% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4% -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffplay -f rawvideo %GlobalRes% -pix_fmt %Pixfmtdec% -i - {Enter}
@@ -529,8 +578,8 @@ Gui 4:Add, Radio, x4 y5 w75 h23 g3chan, 3 Channel
 Gui 4:Add, Radio, x4 y28 w75 h23 g4chan, 4 Channel
 Gui 4:Add, Radio, x4 y51 w75 h23 g6Chan, 6 Channel
 Gui 4:Add, Radio, x4 y74 w75 h23 g8Chan, 8 Channel
-Gui 4:Add, Radio, x4 y97 w75 h23 g12Chan, 12 n/a
-Gui 4:Add, Radio, x4 y120 w75 h23, 16 n/a
+Gui 4:Add, Radio, x4 y97 w75 h23 g12Chan, 1̶2̶ ̶C̶h̶a̶n̶n̶e̶l̶
+Gui 4:Add, Radio, x4 y120 w75 h23, 1̶6̶ ̶C̶h̶a̶n̶n̶e̶l̶
 Gui 4:Show, w100 h147, Pick Your Poison <3
 Gui, 4:-Sysmenu
 Return
@@ -564,7 +613,7 @@ Gui 10:Add, Button, x183 y287 w66 h23 g3ChInput, INPUT
 Gui 10:Add, DropDownList, x8 y8 w120 vCh1af Choose47, %List8%
 Gui 10:Add, DropDownList, x8 y32 w120 Choose20 vCh2af, %List8%
 Gui 10:Add, DropDownList, x8 y56 w120 Choose20 vCh3af, %List8%
-Gui 10:Add, Edit, x128 y8 w120 h21 vCh1afVal, 0.1:1:1:1:1:0.1
+Gui 10:Add, Edit, x128 y8 w120 h21 vCh1afVal, 0.1:1:1:1:0.01:0.1
 Gui 10:Add, Edit, x128 y32 w120 h21 vCh2afVal
 Gui 10:Add, Edit, x128 y56 w120 h21 vCh3afVal
 ;;Gui 10:Add, Edit, x128 y104 w120 h21 vCh5afVal
@@ -702,16 +751,24 @@ else {
 Return
 
 Save3ChPls:
+if (ActivateBinaryVar = 0) {
 data = %A_Sec%%A_Min%%A_Hour%
-md5filename := MD5(data,StrLen(data))
+makefilename := MD5(data,StrLen(data))
+DOITVAR = no
+}
+if (ActivateBinaryVar = 1) {
+DOITVAR = BinaryPls
+PercentVar = `%
+}
+else
 #EscapeChar `
 PercentVar = `%
-;Lets Generate some md5 hashes lol, stole this from RosettaCode
+goSub %DOITVAR%
 
 OutputVar := ; START WITH DEFAULT VARIABLE
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 
@@ -728,7 +785,7 @@ if you wanted a static image.
 )
 OutputVar :=
 (
-" %NewFolder%/%md5filename%.xwd %NewFolder%/%md5filename%.bmp -y  && ffplay %NewFolder%/%md5filename%.xwd -fs"
+" %NewFolder%/%makefilename%.xwd %NewFolder%/%makefilename%.bmp -y  && ffplay %NewFolder%/%makefilename%.xwd -fs"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -737,8 +794,8 @@ else if UserInput contains webm,mp4,mkv,avi,nut,wmv,
 ;msgbox, Video Detected.
 OutputVar :=
 (
-"-c:v ffvhuff %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v ffvhuff %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -760,8 +817,8 @@ if this is an an image.
 )
 OutputVar :=
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -999,16 +1056,24 @@ else {
 Return
 
 Save4ChPls:
+if (ActivateBinaryVar = 0) {
 data = %A_Sec%%A_Min%%A_Hour%
-md5filename := MD5(data,StrLen(data))
+makefilename := MD5(data,StrLen(data))
+DOITVAR = no
+}
+if (ActivateBinaryVar = 1) {
+DOITVAR = BinaryPls
+PercentVar = `%
+}
+else
 #EscapeChar `
 PercentVar = `%
-;Lets Generate some md5 hashes lol, stole this from RosettaCode
+goSub %DOITVAR%
 
 OutputVar := ; START WITH DEFAULT VARIABLE
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 
@@ -1025,7 +1090,7 @@ if you wanted a static image.
 )
 OutputVar :=
 (
-" %NewFolder%/%md5filename%.xwd %NewFolder%/%md5filename%.bmp -y  && ffplay %NewFolder%/%md5filename%.xwd -fs"
+" %NewFolder%/%makefilename%.xwd %NewFolder%/%makefilename%.bmp -y  && ffplay %NewFolder%/%makefilename%.xwd -fs"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -1034,8 +1099,8 @@ else if UserInput contains webm,mp4,mkv,avi,nut,wmv,
 ;msgbox, Video Detected.
 OutputVar :=
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -1057,8 +1122,8 @@ if this is an an image.
 )
 OutputVar :=
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -1323,17 +1388,28 @@ else {
 }
 Return
 
+no:
+return
+
 Save6ChPls:
+if (ActivateBinaryVar = 0) {
 data = %A_Sec%%A_Min%%A_Hour%
-md5filename := MD5(data,StrLen(data))
+makefilename := MD5(data,StrLen(data))
+DOITVAR = no
+}
+if (ActivateBinaryVar = 1) {
+DOITVAR = BinaryPls
+PercentVar = `%
+}
+else
 #EscapeChar `
 PercentVar = `%
-;Lets Generate some md5 hashes lol, stole this from RosettaCode
+goSub %DOITVAR%
 
 OutputVar := ; START WITH DEFAULT VARIABLE
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 
@@ -1350,7 +1426,7 @@ if you wanted a static image.
 )
 OutputVar :=
 (
-" %NewFolder%/%md5filename%.xwd %NewFolder%/%md5filename%.bmp -y  && ffplay %NewFolder%/%md5filename%.xwd -fs"
+" %NewFolder%/%makefilename%.xwd %NewFolder%/%makefilename%.bmp -y  && ffplay %NewFolder%/%makefilename%.xwd -fs"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -1359,8 +1435,8 @@ else if UserInput contains webm,mp4,mkv,avi,nut,wmv,
 ;msgbox, Video Detected.
 OutputVar :=
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -1382,8 +1458,8 @@ if this is an an image.
 )
 OutputVar :=
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -1468,8 +1544,8 @@ GetResolution:
 ResInput = %UserInput%
 respls = "ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 %ResInput% | clip"
 transform, respls, Deref, %respls%
-Run, cmd.exe /k %respls% ,,Hide
-sleep, 300
+runwait, cmd.exe /c %respls% ,,Hide
+;;;sleep, 300
 StringReplace, clipboard, clipboard, `r`n, %A_Space%, All ;Remove linebreak from clipboard
 GuiControl,, 6ChanRes, -s %clipboard%
 GuiControl,, 8ChanRes, -s %clipboard%
@@ -1658,15 +1734,24 @@ else {
 Return
 
 Save8chPls:
+if (ActivateBinaryVar = 0) {
 data = %A_Sec%%A_Min%%A_Hour%
-md5filename := MD5(data,StrLen(data))
+makefilename := MD5(data,StrLen(data))
+DOITVAR = no
+}
+if (ActivateBinaryVar = 1) {
+DOITVAR = BinaryPls
+PercentVar = `%
+}
+else
 #EscapeChar `
 PercentVar = `%
+goSub %DOITVAR%
 
 OutputVar := ; START WITH DEFAULT VARIABLE
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 
@@ -1683,17 +1768,17 @@ if you wanted a static image.
 )
 OutputVar :=
 (
-" %NewFolder%/%md5filename%.xwd %NewFolder%/%md5filename%.bmp -y  && ffplay %NewFolder%/%md5filename%.xwd -fs"
+" %NewFolder%/%makefilename%.xwd %NewFolder%/%makefilename%.bmp -y  && ffplay %NewFolder%/%makefilename%.xwd -fs"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
 else if UserInput contains webm,mp4,mkv,avi,nut,wmv,
 {
-msgbox, Video Detected.
+;msgbox, Video Detected.
 OutputVar :=
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -1715,8 +1800,8 @@ if this is an an image.
 )
 OutputVar :=
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -1981,15 +2066,24 @@ else {
 Return
 
 Save12chPls:
+if (ActivateBinaryVar = 0) {
 data = %A_Sec%%A_Min%%A_Hour%
-md5filename := MD5(data,StrLen(data))
+makefilename := MD5(data,StrLen(data))
+DOITVAR = no
+}
+if (ActivateBinaryVar = 1) {
+DOITVAR = BinaryPls
+PercentVar = `% ; Must have this here also for some reason
+}
+else
 #EscapeChar `
 PercentVar = `%
+goSub %DOITVAR%
 
 OutputVar := ; START WITH DEFAULT VARIABLE
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 
@@ -2006,17 +2100,17 @@ if you wanted a static image.
 )
 OutputVar :=
 (
-" %NewFolder%/%md5filename%.xwd %NewFolder%/%md5filename%.bmp -y  && ffplay %NewFolder%/%md5filename%.xwd -fs"
+" %NewFolder%/%makefilename%.xwd %NewFolder%/%makefilename%.bmp -y  && ffplay %NewFolder%/%makefilename%.xwd -fs"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
 else if UserInput contains webm,mp4,mkv,avi,nut,wmv,
 {
-msgbox, Video Detected.
+;msgbox, Video Detected.
 OutputVar :=
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -2038,8 +2132,8 @@ if this is an an image.
 )
 OutputVar :=
 (
-"-c:v huffyuv %NewFolder%/%md5filename%.avi %NewFolder%/%md5filename%.gif -s 320x180 %NewFolder%/%md5filename%-Res.gif -y && ^
-ffplay %NewFolder%/%md5filename%.avi -loop 9001"
+"-c:v huffyuv %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif -s 320x180 %NewFolder%/%makefilename%-Res.gif -y && ^
+ffplay %NewFolder%/%makefilename%.avi -loop 9001"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
