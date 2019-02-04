@@ -37,9 +37,7 @@ This version starts as soon as it's executed, so I bound some hotkeys to start/k
 
 [Sox Setup Help](https://github.com/JoFrhwld/FAVE/wiki/Sox-on-Windows)
 
-
-
-
+[Chexr; included](https://github.com/atagen/chexr)
 
 [Bonus Sample](https://a.yiff.moe/nxnsnw.mp4)
 
