@@ -6,21 +6,60 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 Quote = " ; Damn Windows not letting me escape characters
 ActivateBinaryVar = 0 ; NEED THIS
 
-;Make Backround via ffmpeg corruption filter aka "noise"
-Random, randNum, 50, 3000
-Random, randNum2, 1000, 2000
+;Make Backround via atagens "chexr" command line hex editor.
+FileDelete, %A_ScriptDir%\fUn\background.bmp
+Random, randNum, 10, 99
+Random, randNum2, 1000, 9999
 Random, randNum3, 1, 30
-Array := ["msvideo1", "jpegls", "libxavs", "libvpx", "libtheora", "zmbv", "libopenjpeg"]
-Random, randint, 2, % Array.MaxIndex()
+Random, randNum4, 10, 99
+Random, randNum5, 1000, 9999
+Array := ["msvideo1", "jpegls -pred median", "libxavs", "libvpx", "libtheora", "zmbv", "libopenjpeg", "bmp", "utvideo", "libvpx-vp9 -tile-columns 0 -pix_fmt gbrp", "libvpx-vp9 -tile-columns 0 -pix_fmt yuv444p", "msmpeg4v2", "hap", "asv1", "asv2", "vc2"]
+Random, randint, 1, % Array.MaxIndex()
 Codec := Array[randint]
-;msgbox, Codec=%Codec%`nNoise=%randNum%`nDropAmount=%randNum2% ;Display Codec and noise bitstream filter values at startup
+Array2 := ["%randNum2%", "%randNum%"]
+Random, randint, 1, % Array2.MaxIndex()
+RANDUMB1 := Array2[randint]
+transform, RANDUMB1, Deref, %RANDUMB1%
 
 makeBack :=
 (
-"ffmpeg -ss %randNum3% -f lavfi -i testsrc2=s=640x360 -f avi -q:v 0 -vcodec %Codec% -bsf noise=%randNum%:dropamount=%randNum2% -frames 1 - | ffmpeg -f avi  -i - -i %A_ScriptDir%\fUn\overlay.png -filter_complex %Quote%[1:v]null[1];[0:v][1]overlay=x=20:y=20[a]%Quote% -map [a]  %A_ScriptDir%\fUn\background.bmp -y"
+"ffmpeg -ss %randNum3% -f lavfi -i testsrc2=s=640x360 -f avi -q:v 0 -vcodec %Codec%  -frames 1 -vf eq=contrast=-1 outpls.fuk -y && chexr outpls.fuk %randNum4% %RANDUMB1% bentpls.fuk && ffmpeg -f avi  -i bentpls.fuk %A_ScriptDir%\fUn\background.bmp -y"
 )
 transform, makeBack, Deref, %makeBack%
+;;;msgbox, Codec=%Codec%`nHex Target=%randNum4%`nHex Replace=%RANDUMB1% ;Display Codec and Hex Values at startup
 runwait, cmd.exe /c %makeBack%,,Hide, pid
+
+RetryBackground:
+ifNotExist, %A_ScriptDir%\fUn\background.bmp
+{
+Random, randNum, 10, 99
+Random, randNum2, 1000, 9999
+Random, randNum3, 1, 30
+Random, randNum4, 10, 99
+Random, randNum5, 1000, 9999
+
+Random, randint, 1, % Array.MaxIndex()
+Codec := Array[randint]
+Array2 := ["%randNum2%", "%randNum%"]
+Random, randint, 1, % Array2.MaxIndex()
+RANDUMB1 := Array2[randint]
+
+makeBack :=
+(
+"ffmpeg -ss %randNum3% -f lavfi -i testsrc2=s=640x360 -f avi -q:v 0 -vcodec %Codec%  -frames 1 -vf eq=contrast=-1 outpls.fuk -y && chexr outpls.fuk %randNum4% %RANDUMB1% bentpls.fuk && ffmpeg -f avi  -i bentpls.fuk %A_ScriptDir%\fUn\background.bmp -y"
+)
+transform, RANDUMB1, Deref, %RANDUMB1%
+transform, makeBack, Deref, %makeBack%
+;;;msgbox, RETRYING`nCodec=%Codec%`nHex Target=%randNum4%`nHex Replace=%RANDUMB1% ;Display Codec and Hex Values at startup
+runwait, cmd.exe /c %makeBack%,,Hide, pid
+ifNotExist, %A_ScriptDir%\fUn\background.bmp
+{
+gosub, RetryBackground
+return ; need this return here for bug issues
+}
+}
+FileDelete, %A_ScriptDir%\outpls.fuk
+FileDelete, %A_ScriptDir%\bentpls.fuk
 
 ;Make dropdownlist arrays, fuk u Skitty my indentation looks pretty
 ArrayListIndex := 0
@@ -96,7 +135,7 @@ Loop,%ArrayList7%
 List8 .= ArrayList%A_Index%  . "|"
 
 
-; if advapi32\MD5Init doesnt exist use a native Binary function instead. (For Window 10 Issues)
+; if advapi32\MD5Init doesnt exist use a native Binary function instead. (For Window 10 Issues, although it seems Windows 10 supports this MD5 function now???)
 data = %A_Sec%%A_Min%%A_Hour%
 makefilename := MD5(data,StrLen(data))
 MD5( ByRef V, L=0 ) {
@@ -128,11 +167,12 @@ Return Bin
 Process, Close, ffmpeg.exe ;close backgound image generation process
 Process, Close, %pid% ;close backgound image generation process
 Process, Close, cmd.exe ;close backgound image generation process
+Process, Close, chexr.exe ;close backgound image generation process
 
 Gui, Color, 884488
 clipboardnew = "%clipboard%" ;convert clipboard into a dynamic variable and then apply transform to start GUI with clipboard input
 transform, clipboardnew, Deref, %clipboardnew%
-InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, Update clipboard with the desired file and restart the GUI...`n Or just go on your happy way doing what you were doing, , x400 y357 w70 h70,,,,,,-i %clipboardnew%
+InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, UPDATE CLIPBOARD WITH DESIRED INPUT AND RESTART...`nBackground Image Variables:`nCodec=%Codec%`nHex Target=%randNum4%`nHex Replace=%RANDUMB1%, , x400 y357 w70 h70,,,,,,-i %clipboardnew%
 Gui, Add, Button, x8 y360 w38 h30  gPlayMyStream,ffplay
 Gui, Add, Button, x8 y399 w38 h40 gSendMyStream,stream
 Gui, Add, Button, x585 y390 w53 h22 gPreviewPls,pReViEw
@@ -159,7 +199,7 @@ Gui,Show,,WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!! :'D
 Gui, Add, Edit, x410 y409 w140 h20 vDecoderSetting,-ar 4000 -af volume=0.5
 Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -f avi -s 640x360
 Gui, Add, Button, x592 y362 w38 h22  gInput,Input
-;Gui Add, Picture, x-1 y-2 w659 h325 +BackgroundTrans, %A_ScriptDir%\fUn\overlay.png
+Gui Add, Picture, x-1 y-2 w659 h325 +BackgroundTrans, %A_ScriptDir%\fUn\overlay.png
 Gui Add, Picture, x-48 y-56 w710 h385 0x6 +Border, %A_ScriptDir%\fUn\background.bmp
 Gui, Show
 
@@ -219,13 +259,13 @@ GuiControlGet, EnableBinaryVar
 
 if (EnableBinaryVar = 0) {
 ActivateBinaryVar = 0
-msgbox, Binary Mode Disabled!
+msgbox, Binary Filename Mode Disabled!
 }
 else {
 }
 if (EnableBinaryVar = 1) {
 ActivateBinaryVar = 1
-msgbox, Binary Mode Enabled!
+msgbox, Binary Filename Mode Enabled!
 }
 else {
 ;no
