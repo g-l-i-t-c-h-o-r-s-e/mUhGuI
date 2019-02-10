@@ -19,3 +19,11 @@
 #Added New functions
 #Added background function
 ##I probably forgot some things to mention, etc. Adding InfiniFilter soon.
+##Added image detection for the "KMS" sonification panel; saves as bmp
+#Added colorspace options to "KMS" panel; for both video and audio options
+#Added --reverse-nibbles and --reverse-bits flags to the sox sonification
+#Fixed checkbox bugs thanks to gosub function; boxes werent updating values correctly
+#Updated "Sauce" Input buttons on the Audio and Video Sonification features.
+#Updated Save buttons on Video and Audio Sonification; now saves to unique folder.
+#Fixed SOX checkboxes not updating.
+
