@@ -25,5 +25,20 @@
 #Fixed checkbox bugs thanks to gosub function; boxes werent updating values correctly
 #Updated "Sauce" Input buttons on the Audio and Video Sonification features.
 #Updated Save buttons on Video and Audio Sonification; now saves to unique folder.
-#Fixed SOX checkboxes not updating.
+##Fixed SOX checkboxes not updating.
+#Moved some buttons around.
+#GUI now checks if ffmpeg exists in the PATH environment variable at startup; if not then we install ffmpeg as such.
+#Added Batch image and audio sonification buttons to the KMS tab.
+#Added Match Resolution option for Batch Image/Video Sonification, skips global resolution.
+#Added colorspace options to KMS.
+#Added Resolution swap button, for audio sonification.
+#Added Easter Egg #1
+#Changed all dropdown boxes to comboboxes to make more interactive.
+#Added enable reverse nibbles and reverse bits SOX flags.
+#Fixed main menu "mUhGuI" overlay dissapearing.
+#Fixed some broken input boxes on KMS tab.
+#Changed the Mouse RightClick spam toggle to use CapsLock & F1 instead of just F5.
+#A lot of work on the Audio Sonification stuff on the KMS section.
+##ETC, ETC, ETC.
+
 
