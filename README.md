@@ -8,6 +8,7 @@ It's kind of a hit and miss with which formats will work together, but you'll fi
 Some Codec combinations could actually deafen you, lower your shizzit. Some form glitchy melodies~
 I've included a compiled version if you don't have or wan't to install AutoHotKey.
 
+On the KMS Section is where you'll find Video/Image Sonification as well as the obscure "Audio Sonification" as I losely call it. I'll write a bettter explenation for all this soon.
 
 Over the years this has become so much more than I planned and continues to evolve every other day, stay tuned for more goodies that I come up with! Pls hit me up if you have any ideas or issues! :>
 ![main](https://i.imgur.com/Y6y4VSg.png)
