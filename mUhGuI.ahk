@@ -3,31 +3,46 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
+
+FileCreateDir, fUn\debug
 EnvGet, CheckPathEnvVar, PATH
-if CheckPathEnvVar Contains ffmpeg 
+;msgbox, %CheckPathEnvVar%
+;IfNotInString, CheckPathEnvVar, muhgui
+If !RegExMatch(CheckPathEnvVar,"(ffmpeg|mUhGuI)") ; check if PATH enviroment variable contains ffmpeg or mUhGuI
 {
-;nah
+msgbox, It looks like you dont have ffmpeg, sit back while I install it bb <3
+url := "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-4.1-win64-static.zip"
+SplitPath, url, name, dir, ext, name_no_ext, drive
+
+F1=%A_ScriptDir%\%name_no_ext%.%ext%
+SplashTextOn, 400, 40, ,Now downloading`n%name_no_ext%
+urldownloadtofile,%url%,%f1%
+SplashTextOff
+msgbox, 262208,Download ,Download Complete, now unzipping and applying enviroment variables...
+
+runwait, %A_ScriptDir%/fUn/unzipmove.ahk ; run external ahk to perform actions to properly setup FFMpeg
 }
 else
-msgbox, It looks like you dont have ffmpeg, install maybe?
-
 
 Quote = " ; Damn Windows not letting me escape characters
 ActivateBinaryVar = 0 ; NEED THIS
+global GuiColor = 884488
+global comb := "m|e|m|e"
+
 
 ;Make Backround via atagens "chexr" command line hex editor.
 FileDelete, %A_ScriptDir%\fUn\background.bmp
-Random, randNum, 10, 99
-Random, randNum2, 1000, 9999
-Random, randNum3, 1, 30
-Random, randNum4, 10, 99
-Random, randNum5, 1000, 9999
-Array := ["msvideo1", "jpegls -pred median", "libxavs", "libvpx", "libtheora", "zmbv", "libopenjpeg", "bmp", "utvideo", "libvpx-vp9 -tile-columns 0 -pix_fmt gbrp", "libvpx-vp9 -tile-columns 0 -pix_fmt yuv444p", "msmpeg4v2", "hap", "asv1", "asv2", "vc2"]
-Random, randint, 1, % Array.MaxIndex()
-Codec := Array[randint]
-Array2 := ["%randNum2%", "%randNum%"]
-Random, randint, 1, % Array2.MaxIndex()
-RANDUMB1 := Array2[randint]
+ Random, randNum, 10, 99
+  Random, randNum2, 1000, 9999
+   Random, randNum3, 1, 30
+  Random, randNum4, 10, 99
+ Random, randNum5, 1000, 9999
+Array := ["msvideo1", "jpegls -pred median", "libxavs", "libvpx", "libtheora", "zmbv", "libopenjpeg", "cinepak", "utvideo", "libvpx-vp9 -tile-columns 0 -pix_fmt gbrp", "libvpx-vp9 -tile-columns 0 -pix_fmt yuv444p", "wmv2", "png", "asv1", "asv2", "vc2"]
+ Random, randint, 1, % Array.MaxIndex()
+  Codec := Array[randint]
+   Array2 := ["%randNum2%", "%randNum%"]
+  Random, randint, 1, % Array2.MaxIndex()
+ RANDUMB1 := Array2[randint]
 transform, RANDUMB1, Deref, %RANDUMB1%
 
 makeBack :=
@@ -163,11 +178,6 @@ MD5( ByRef V, L=0 ) {
 Return MD5
 }
 
-;DoMD5:
-;data = %A_Sec%%A_Min%%A_Hour%
-;makefilename := MD5(data,StrLen(data))
-;return
-
 ;THIS BE THE BINARY FUNCTIONZ
 TxtToBin(txt) {
  Loop Parse, txt
@@ -178,12 +188,12 @@ TxtToBin(txt) {
 Return Bin
 }
 
-;Process, Close, ffmpeg.exe ;close backgound image generation process
-Process, Close, %pid% ;close backgound image generation process
-;Process, Close, cmd.exe ;close backgound image generation process
-Process, Close, chexr.exe ;close backgound image generation process
+;Process, Close, ffmpeg.exe ;close backgound image glitching process
+Process, Close, %pid% ;close backgound image glitching process
+;Process, Close, cmd.exe ;close backgound image glitching process
+Process, Close, chexr.exe ;close backgound image glitching process
 
-Gui, Color, 884488
+Gui, Color, %GuiColor%
 clipboardnew = "%clipboard%" ;convert clipboard into a dynamic variable and then apply transform to start GUI with clipboard input
 transform, clipboardnew, Deref, %clipboardnew%
 InputBox, UserInput, m̶̨̙̖̻͉̦̅̄̈͐̐͌Ë̸̱̣̹͖͎̅̓̀̆̃͠m̶̜͓̲̀̿̍͐̚E̵̐͠, UPDATE CLIPBOARD WITH DESIRED INPUT AND RESTART...`nBackground Image Variables:`nCodec=%Codec%`nHex Target=%randNum4%`nHex Replace=%RANDUMB1%, , x400 y357 w70 h70,,,,,,-i %clipboardnew%
@@ -193,16 +203,21 @@ Gui, Add, Button, x585 y390 w53 h22 gPreviewPls,pReViEw
 Gui, Add, Button, x592 y362 w38 h22  gInput,Input
 Gui, Add, ComboBox,  x478 y357 w100 h88 vDecoderchoice Choose140, %List6%
 Gui, Add, ComboBox,  x378 y357 w110 h88 vEncoderchoice Choose66, %List%
-Gui, Add, Text, BackgroundTrans x404 y389 w190 h20 , Video Encoders && Decoders
-Gui, Add, Text, BackgroundTrans x122 y389 w170 h20 , Audio Decoders && Encoders
+Gui, Add, Text, +BackgroundTrans x404 y389 w190 h20 , Video Encoders && Decoders
+Gui, Add, Text, +BackgroundTrans x122 y389 w170 h20 , Audio Decoders && Encoders
 Gui, Add, ComboBox,  x200 y357 w115 h88 vADecoderchoice Choose157, %List3%
+Gui Add, Picture, x-1 y-13 w659 h340 +BackgroundTrans , %A_ScriptDir%\fUn\background.bmp
+Gui Add, Picture, x-11 y-12 w659 h325 +BackgroundTrans, %A_ScriptDir%\fUn\overlay.png
+Gui, Show,,WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!! :'D ;Gui Bug Fix
+Gui, +Resize +MinSize666x462 +MaxSize666x462 ;Gui Bug Fix
+WinMove, WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!! :'D,,, , 10,10 ;Gui Bug Fix
 Gui, Add, Button, x326 y367 w40 h20  gSaveMe,Save
 ;Gui, Add, Button, x356 y367 w40 h20  gPreset,Pre
 Gui, Add, Button, x302 y387 w90 h40  gChoose,[DEPRICATED]`nMore Soon
 Gui, Add, Button, x325 y427 w40 h15 gLocalGlitch,LOCAL
 Gui, Add, Button, x77 y361 w8 h52  gAudioAndVideoSonification,KMS
 Gui, Add, Button, x32 y342 w52 h14  gMultiChannel,MULTI
-Gui, Add, CheckBox, x2 y342 w10 h14 vBatchVar gEnableBatchMode, test
+Gui, Add, CheckBox, x2 y342 w10 h14 vDebugVar gEnableDebugMode, test
 Gui, Add, CheckBox, x2 y330 w10 h14 vEnableCleanUpModeVar gEnableCleanUpMode, test
 Gui, Add, CheckBox, x15 y330 w10 h14 vEnableBinaryVar gEnableBinaryMode, test
 Gui, Add, Button, x57 y361 w8 h52  gUDPOverload,PLS
@@ -210,16 +225,10 @@ Gui, Add, Button, x97 y361 w8 h52  gSaveIt,SAVE
 Gui, Add, ComboBox,  x110 y357 w100 h88 vAEncoderchoice Choose68, %List2%
 Gui, Add, ComboBox,  x53 y418 w68 h88 vPixfmt Choose29, %List4%
 Gui, Add, ComboBox,  x578 y418 w68 h88 vPixfmtdec Choose29, %List5%
-Gui,Show,,WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!! :'D
 Gui, Add, Edit, x410 y409 w140 h20 vDecoderSetting,-ar 4000 -af volume=0.5
 Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -f avi -s 640x360
-Gui Add, Picture, x-1 y-2 w659 h325 +BackgroundTrans, %A_ScriptDir%\fUn\overlay.png
-Gui Add, Picture, x-1 y-13 w659 h340 +Border, %A_ScriptDir%\fUn\background.bmp
-Gui, Show
+goto wao
 Return
-
-OK:
-return
 
 BinaryPls:
 ;DOITVAR = BinaryPls
@@ -246,23 +255,34 @@ else {
 }
 return
 
-EnableBatchMode:
-GuiControlGet, BatchVar
+MakeNewFolder:
+array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
+Sort, array, Random D,
+mystr := RegExReplace(array, ",")
+StringTrimLeft, NewFolder, mystr, 20
+NewFolder = OUTPUT/%DirectoryVal%/%NewFolder%
+msgbox, New Folder Is: %NewFolder%
+transform, NewFolder, Deref, %NewFolder%
+return
+
+EnableDebugMode:
+GuiControlGet, DebugVar
 BatchCommand := ""
 transform, BatchCommand, Deref, %BatchCommand%
 commandval := "msgbox, WAOOOO!!!!!!"
 
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 BatchCommand := ""
 ;IsBatch := ""
-msgbox, Batch Mode Disabled!
+msgbox, Debug Mode Disabled!
 }
 else {
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 ;IsBatch := "echo"
 ;BatchCommand := " > run.bat"
-msgbox, Batch Mode Enabled!
+msgbox, Debug Mode Enabled!
+global comb := "up|down|down|left|right|left|right|b|a|enter"
 }
 else {
 ;no
@@ -288,6 +308,83 @@ else {
 return
 
 
+OpenLocation:
+Destination := StrReplace(NewFolder, "/", "\")
+ExpPath := "%A_ScriptDir%\%Destination%"
+transform, ExpPath, Deref, %ExpPath%
+if !(hWnd := WinExist(ExpPath)) ; Fixes issue with too many explorer windows being opened <3
+  run, % "explorer.exe /e," ExpPath,,,pid3
+else
+{
+  WinGet MMX, MinMax, ahk_id %hWnd%
+  if (hWnd = WinExist("A"))
+  WinClose, ahk_id %hWnd%
+else
+{
+  if (MMX = -1)
+      WinMaximize, ahk_id %hWnd%
+  if (MMX = 1)
+      WinMinimize, ahk_id %hWnd%
+  if (MMX = 0)
+      WinActivate, ahk_id %hWnd%
+
+	  }
+}
+return
+
+EnableAudio:
+if (AudioVar = 0) {
+AttemptAudio := ""
+Gui, Submit, Nohide
+}
+else {
+AttemptAudio := "ffplay -vn %UserInput%"
+transform, AttemptAudio, Deref, %AttemptAudio%
+msgbox, %AttemptAudio%
+}
+Gui, Submit, Nohide
+return
+
+wao:
+~up::
+Loop, parse, comb, |
+{
+input, var,T.900,{%a_loopfield%}
+if inStr(ErrorLevel, "Timeout")
+return
+}
+msgbox, You Must Construct Additional Pylons...
+gosub pls
+return
+
+pls:
+loop {
+random, RanNumb, 1000, 999999
+gui 1:color, %RanNumb%
+gui 2:color, %RanNumb%
+gui 3:color, %RanNumb%
+gui 4:color, %RanNumb%
+gui 5:color, %RanNumb%
+gui 6:color, %RanNumb%
+gui 7:color, %RanNumb%
+gui 8:color, %RanNumb%
+gui 9:color, %RanNumb%
+gui 10:color, %RanNumb%
+gui 11:color, %RanNumb%
+gui 12:color, %RanNumb%
+gui 13:color, %RanNumb%
+sleep, 100
+}
+return
+
+SaveIt:
+Gui,Submit, Nohide
+Run, cmd.exe
+sleep, 666
+Send, ffmpeg -vcodec %Decoderchoice% -an  -i udp://127.0.0.1:1337?overrun_nonfatal=1 -vcodec ffvhuff -f avi -y fUn/ayylmao.avi -f nut - | ffplay - {Enter}
+return
+	  
+
 LocalGlitch:
 Gui, Submit, Nohide
 SendStream := " %UserInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% - | "
@@ -308,7 +405,7 @@ Run, cmd.exe /k "ffmpeg %loopit% %SendStream%%PlayStream%"
 sleep, 88
 AppendMePls = `nffmpeg %SendStream%%PlayStream%`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 return
 
 PlayMyStream:
@@ -350,13 +447,13 @@ Input:
 FileSelectFile, UserInput
 AddFFMpegInputFlagToCommand := "-i "
 UserInput = %AddFFMpegInputFlagToCommand%%Quote%%UserInput%%Quote%
-Gui, 13:Destroy
+Gui, 13:Destroy ; quick fix for closing the "Sauce" input windows.
 return
 
 SaveMe:
 AppendMe = `n%SendStream%`n%PlayStream%`n`n
 transform, AppendMe, Deref, %AppendMe%
-Fileappend,%AppendMe%,fUn\output\log.txt
+Fileappend,%AppendMe%,fUn\debug\log.txt
 Gui,Submit, Nohide
 msgbox, Saved to output/log.txt
 return
@@ -380,13 +477,13 @@ return
 
 AudioAndVideoSonification:
 Gui,Submit, Nohide
-Gui, 3:Color, 884488, -caption
+Gui, 3:Color, %GuiColor%, -caption
 Gui, 3:Add, Button, gFugvideo x302 y279 w130 h60 , fUcKiNg dO iT
 ; Fixed ComboBox default values
-Gui, 3:Add, ComboBox, x42 y239 w130 h21 VvCompressor Choose68, %List%
-Gui, 3:Add, ComboBox, x302 y239 w130 h21 vBentAcodec Choose55, %List2%
-Gui, 3:Add, ComboBox, x42 y199 w130 h21 VAencodercodec Choose55, %List2%savefug
-Gui, 3:Add, ComboBox, x302 y199 w130 h20 Choose68, %List%
+Gui, 3:Add, ComboBox, x42 y239 w130 h500 VvCompressor Choose68, %List%
+Gui, 3:Add, ComboBox, x42 y199 w130 h500 VAencodercodec Choose55, %List2%
+Gui, 3:Add, ComboBox, x302 y239 w130 h500 vBentAcodec Choose55, %List2%
+Gui, 3:Add, ComboBox, x302 y199 w130 h500 vBentVcodec Choose68, %List%
 Gui, 3:Add, Edit, x302 y259 w130 h20 vAFilters , -af flanger,flanger
 Gui, 3:Add, Edit, x42 y259 w130 h20 VvFilters , -vf vflip`,hflip
 ; removed sample rate boxes for now
@@ -403,13 +500,13 @@ Gui, 3:Add, Button, gFugAudio x42 y279 w130 h60 , fUcKiNg dO iT
 ; Added gInput here
 Gui, 3:Add, Button, gInput x2 y219 w40 h60 gInputa, Sauce
 Gui, 3:Add, Button, x432 y219 w40 h60 gInputv,Sauce
-Gui, 3:Add, ComboBox, x192 y209 w90 h10 VEffect1 Choose31, %List7%
+Gui, 3:Add, ComboBox, x192 y209 w90 h500 VEffect1 Choose31, %List7%
 Gui, 3:Add, Edit, x182 y229 w110 h20 VFXParam1 , -n 9001
 Gui, 3:Add, Text, x212 y189 w40 h20 , SOX FX
-Gui, 3:Add, ComboBox, x192 y249 w90 h20 VEffect2 , %List7%
+Gui, 3:Add, ComboBox, x192 y249 w90 h500 VEffect2 , %List7%
 Gui, 3:Add, Edit, x182 y269 w110 h20 VFXParam2 , ;0.8 0.88 60 0.4
 Gui, 3:Add, Edit, x182 y309 w110 h20 VFXParam3 , ;17
-Gui, 3:Add, ComboBox, x192 y289 w90 h10 VEffect3 , %List7%
+Gui, 3:Add, ComboBox, x192 y289 w90 h500 VEffect3 , %List7%
 ; Added Volume Slider
 Gui, 3:Add, Slider, x62 y359 w100 h20 Tooltip VFugAudioVol TickInterval2 Range0-10, 1
 Gui, 3:Add, Text, x2 y339 w60 h20 , Sample R8
@@ -419,13 +516,18 @@ Gui, 3:Add, Text, x422 y339 w60 h20 , Sample R8
 Gui, 3:Add, Slider, x62 y339 w100 h20 Tooltip VaDecSmplr8 TickInterval2 Range666-88100, 44100
 Gui, 3:Add, Text, x2 y359 w60 h20 , Volume
 Gui, 3:Add, Text, x422 y359 w60 h20 , Volume
-Gui, 3:Add, Button, x2 y159 w40 h40 gSaveFugAudio,Save
+Gui, 3:Add, Button, x2 y142 w40 h35 gPLSBATCH2, batch
+Gui, 3:Add, Button, x2 y177 w40 h22 gSaveFugAudio,Save
 Gui, 3:Add, Button, x432 y177 w40 h22 gSaveFugVideo,Save
-Gui, 3:Add, Button, x432 y143 w40 h35 gGetResolution, Get Res
+Gui, 3:Add, Button, x197 y137 w65 h20 gGetResolution, Get Res
+Gui, 3:Add, Edit, x197 y159 w80 h20 VGlobalRes , -s 640x360
+Gui, 3:Add, Button, x264 y137 w13 h13 gSwapRes,
+Gui, 3:Add, Button, x432 y142 w40 h35 gPLSBATCH, batch
+Gui, 3:Add, Checkbox, right x412 y115 w60 h23 0x80 vBatchMatchResVar, Match Res?
 Gui, 3:Add, GroupBox, x12 y9 w440 h60 , *notices GUI* oWo Wats This?~
 Gui, 3:Add, Text, x32 y29 w410 h30 , Pretty much a groovy way to kinda trick ffmpeg to sonify video`, compress audio data with video codecs`, process audio with video effects`, etc in real time... (and with SOX)
 Gui, 3:Add, Button, x282 y249 w10 h20 , ?
-Gui, 3:Add, Button, x182 y249 w10 h20 , ?
+Gui, 3:Add, Button, x182 y249 w10 h20 gFrei0rPreset1, ?
 ; Added Channel Count
 Gui, 3:Add, ComboBox, x2 y319 w40 h21 vChanCount2 Choose2, 1|2|3|4|5||6|7|8|9|10
 Gui, 3:Add, ComboBox, x2 y299 w40 h20 vChanCount1 Choose2, 1|2|3|4|5||6|7|8|9|10
@@ -436,23 +538,21 @@ Gui, 3:Add, Checkbox, x195 y330 w102 h12 vSoxVar gEnableSox, Enable Sox?
 Gui, 3:Add, Checkbox, x195 y342 w102 h12 vNibbleVar gEnableNibble, Reverse Nibbles? 
 Gui, 3:Add, Checkbox, x195 y354 w102 h12 vBitVar gEnableBits, Reverse Bits?
 Gui, 3:Add, Button, gBack2 x2 y379 w470 h10 , bAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcK
-Gui, 3:Add, Edit, x202 y159 w70 h20 VGlobalRes , -s 640x360
-Gui, 3:Add, GroupBox, x192 y129 w90 h60 , Global Resolution
-Gui, 3:Add, ComboBox, x177 y99 w120 vLePixFmtIn Choose84, %list4%
-Gui, 3:Add, ComboBox, x177 y77 w120 vLePixFmtOut Choose84, %list4%
+Gui, 3:Add, GroupBox, x192 y122 w90 h65 , Global Resolution
+Gui, 3:Add, ComboBox, x177 y99 h500 vLePixFmtIn Choose4, %list4%
+Gui, 3:Add, ComboBox, x177 y77 h500 vLePixFmtOut Choose4, %list4%
 Gui, 3:Show, x328 y144 h395 w477, ITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENING
 Gui, 3:-Sysmenu
 Return
 
-Inputv:
+Frei0rPreset1:
+Gui, Submit, Nohide
+GuiControl,, vFilters, -vf frei0r=pixeliz0r:0.002:0.002
+return
 
-array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
-Sort, array, Random D,
-mystr := RegExReplace(array, ",")
-StringTrimLeft, NewFolder, mystr, 20
-NewFolder = OUTPUT/SonifyVideo/%NewFolder%
-msgbox, New Folder Is: %NewFolder%
-transform, NewFolder, Deref, %NewFolder%
+Inputv:
+DirectoryVal = SonifyVideo
+gosub MakeNewFolder
 
 FileCreateDir, OUTPUT\SonifyVideo
 FileCreateDir, %NewFolder%
@@ -486,13 +586,8 @@ GuiControl,, InputVvar, -f lavfi -i testsrc2=s=640x360
 Return
 
 Inputa:
-array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
-Sort, array, Random D,
-mystr := RegExReplace(array, ",")
-StringTrimLeft, NewFolder, mystr, 20
-NewFolder = OUTPUT/SonifyAudio/%NewFolder%
-msgbox, New Folder Is: %NewFolder%
-transform, NewFolder, Deref, %NewFolder%
+DirectoryVal = SonifyAudio
+gosub MakeNewFolder
 
 FileCreateDir, OUTPUT\SonifyAudio
 FileCreateDir, %NewFolder%
@@ -516,7 +611,7 @@ if (A_Gui = 13 && wParam = 13) ;Close GUI after hitting ENTER Key
  Gui, 13:Destroy
 }
 }
-Gui, 13:Show, w368 h96,
+Gui, 13:Show, w368 h96
 Return
 
 DefaultInputA:
@@ -524,22 +619,13 @@ Gui, Submit, Nohide
 GuiControl,, InputAvar, -f lavfi -i "sine=frequency=55:sample_rate=888:duration=30"
 Return
 
-
-
 Back2:
 Gui, 1:Show
 Gui, 3:Destroy
 Return
 
-SaveIt:
-Gui,Submit, Nohide
-Run, cmd.exe
-sleep, 666
-Send, ffmpeg -vcodec %Decoderchoice% -an  -i udp://127.0.0.1:1337?overrun_nonfatal=1 -vcodec ffvhuff -f avi -y fUn/ayylmao.avi -f nut - | ffplay - {Enter}
-return
-	  
 UDPOverload:
-Gui, 2:Color, 884488, -caption
+Gui, 2:Color, %GuiColor%, -caption
 Gui, 2:Add, Button, gBack x2 y16 w20 h410 , bAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcKBaCkbAcKBaCkbAcKBacKbAcKBaCk
 Gui, 2:Add, Button, gUDP4 x442 y9 w90 h30 , DO IT
 Gui, 2:Add, Button, gUDP3 x332 y9 w90 h30 , DO IT
@@ -648,7 +734,7 @@ Gui, Submit, Nohide
 transform, AllowSox, Deref, %AllowSox%
 Run, %ComSpec%,,,pid2
 sleep, 666
-Sendraw, ffmpeg %UserInput% %vEncParam% -f rawvideo -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4% -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffplay -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i -
+Sendraw, ffmpeg %UserInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4% -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffplay -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i -
 sleep, 60
 Send, {Enter}
 return
@@ -657,12 +743,12 @@ SaveFugVideo:
 gosub EnableSox
 data = %A_Sec%%A_Min%%A_Hour%
 makefilename := MD5(data,StrLen(data))
-sfv := "ffmpeg %UserInput% %vEncParam% -f rawvideo -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -c:v h263p -q:v 0 -y %NewFolder%/%makefilename%.avi"
+sfv := "ffmpeg %UserInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -c:v h263p -q:v 0 -y %NewFolder%/%makefilename%.avi"
 if UserInput contains png,jpg,bmp,tiff,jpeg,targa,xwd
 {
 msgbox, Image Input Detected!
 transform, AllowSox, Deref, %AllowSox%
-sfv := "ffmpeg %UserInput% %vEncParam% -f rawvideo -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -y %NewFolder%/%makefilename%.bmp"
+sfv := "ffmpeg %UserInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -y %NewFolder%/%makefilename%.bmp"
 }
 else
 
@@ -671,26 +757,228 @@ transform, sfv, Deref, %sfv%
 Gui,Submit, Nohide
 Runwait, %ComSpec% /c %sfv%,,,pid2
 AppendMe1 = %sfv%`n`n
-Fileappend,%AppendMe1%,fUn\output\log.txt
+Fileappend,%AppendMe1%,fUn\debug\log.txt
 gosub OpenLocation
 return
+
+PLSRESBB:
+	  ;msgbox, fuckme it worked
+         ffprobe := "ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 %ALF% | clip"
+		 transform, ffprobe, Deref, %ffprobe%
+		 runwait, %ComSpec% /c %ffprobe%
+		 StringReplace, clipboard, clipboard, `r`n, %A_Space%, All ;Remove linebreak from clipboard
+		 NewRes = `-s %clipboard%
+		 transform, NewRes, Deref, %NewRes%
+		 Return
+
+PLSRESBB2:
+	  ;msgbox, fuckme it worked
+         ffprobe := "ffprobe %aEncParam% -i %Quote%%ALF%%Quote% -show_entries format=duration -v quiet -of csv=s=x:p=0 | clip"
+		 transform, ffprobe, Deref, %ffprobe%
+		 msgbox, %ffprobe%
+		 runwait, %ComSpec% /c %ffprobe%
+		 StringReplace, clipboard, clipboard, `r`n, %A_Space%, All ;Remove linebreak from clipboard
+		 Duration := clipboard
+		 size := (Duration*705)
+		 msgbox, %size% Size!
+		 width := (size/24)
+		 width := floor(width)
+		 msgbox, %width% Width!
+		 height = 1000
+		 NewRes = `-s %width%x%height%
+		 transform, NewRes, Deref, %NewRes%
+		 msgbox, %NewRes% New
+		 Return
+
+PLSBATCH:
+Gui,Submit, Nohide
+if (BatchMatchResVar = 0) {
+NewRes = %GlobalRes%
+transform, NewRes, Deref, %NewRes%
+MatchRes = no
+}
+if (BatchMatchResVar = 1) {
+MatchRes = PLSRESBB
+msgbox, Matching input/output resolution with original files!
+PercentVar = `%
+}
+else
+#EscapeChar `
+PercentVar = `%
+
+Gui, Submit, Nohide
+DirectoryVal = SonifyBatch
+gosub MakeNewFolder
+
+FileCreateDir, OUTPUT\SonifyBatch
+FileCreateDir, %NewFolder%
+
+Percent = `%
+FileSelectFolder, leFolder,,3 ; select the input folder
+if errorlevel {
+msgbox, You Didnt Select Anything lol
+return
+}
+gosub EnableSox
+data = %A_Sec%%A_Min%%A_Hour%
+makefilename := MD5(data,StrLen(data))
+
+;ButtonCancel:
+;GuiEsscape:
+;Gui, hide
+;return
+
+   Loop,%leFolder%\*.*,0,1
+      {
+	global ALF = A_LoopFileFullPath
+	  SplitPath, ALF, name, dir, ext, name_no_ext, drive
+	  transform, ALF, Deref, %ALF%
+	  If RegExMatch(ext,"(jpg|png|tiff|targa|xwd|bmp|tga|jpeg|apng|svg|pdf|txt)")
+	     {
+         gosub %MatchRes%
+		 ;msgbox, IMAGE INPUT DETECTED :0
+		 global ext = ext
+
+		 BatchCommand := "ffmpeg -i %ALF% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% -frames 1 %NewRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %NewRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %NewRes% -pix_fmt %LePixFmtOut% -i - -y %Quote%%A_ScriptDir%/%NewFolder%/%name_no_ext%.bmp%Quote%"
+		 transform, ALF, Deref, %ALF%
+         transform, AllowSox, Deref, %AllowSox%
+         transform, BatchCommand, Deref, %BatchCommand%
+
+		 Splashimage,,b w600 h50 x100 Y400 CWsilver m9 b fs10 zh0,Sonifying Image...`n%name_no_ext%
+		 runwait,%comspec% /c %BatchCommand%
+		  
+		 AppendMe1 = %BatchCommand%`n`n
+         Fileappend,%AppendMe1%,fUn\debug\log.txt
+		 Splashimage,off
+		 }
+  	  If RegExMatch(ext,"(webm|gif|avi|nut|mkv|wmv)")
+	  {
+         gosub %MatchRes%
+		 global ext = ext
+
+		 BatchCommand := "ffmpeg -i %ALF% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %NewRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %NewRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %NewRes% -pix_fmt %LePixFmtOut% -i - -y %Quote%%A_ScriptDir%/%NewFolder%/%name_no_ext%.%ext%%Quote%"
+		 transform, ALF, Deref, %ALF%
+         transform, AllowSox, Deref, %AllowSox%
+         transform, BatchCommand, Deref, %BatchCommand%
+	 
+		 Splashimage,,b w600 h50 x100 Y400 CWsilver m9 b fs10 zh0,Sonifying Video...`n%name_no_ext%
+		 runwait,%comspec% /c %BatchCommand%
+		  
+		 AppendMe1 = %BatchCommand%`n`n
+         Fileappend,%AppendMe1%,fUn\debug\log.txt
+		 Splashimage,off
+	  }	 	 
+	  }
+	 if ErrorLevel {
+	 msgbox, fuck you did it now, didnt you?
+	 }
+gosub OpenLocation
+return
+
+PLSBATCH2:
+Gui,Submit, Nohide
+if (BatchMatchResVar = 0) {
+NewRes = %GlobalRes%
+transform, NewRes, Deref, %NewRes%
+MatchRes = no
+}
+if (BatchMatchResVar = 1) {
+MatchRes = PLSRESBB2
+msgbox, Matching input/output resolution with original files!
+PercentVar = `%
+}
+else
+#EscapeChar `
+PercentVar = `%
+
+Gui, Submit, Nohide
+DirectoryVal = SonifyAudioBatch
+gosub MakeNewFolder
+
+FileCreateDir, OUTPUT\%DirectoryVal%
+FileCreateDir, %NewFolder%
+
+Percent = `%
+FileSelectFolder, leFolder,,3 ; select the input folder
+if errorlevel {
+msgbox, You Didnt Select Anything lol
+return
+}
+gosub EnableSox
+data = %A_Sec%%A_Min%%A_Hour%
+makefilename := MD5(data,StrLen(data))
+
+;ButtonCancel:
+;GuiEsscape:
+;Gui, hide
+;return
+
+   Loop,%leFolder%\*.*,0,1
+      {
+	global ALF = A_LoopFileFullPath
+	  SplitPath, ALF, name, dir, ext, name_no_ext, drive
+	  transform, ALF, Deref, %ALF%
+	  If RegExMatch(ext,"(flac|aic|ogg|wav|mp2|mp3|mp4|avi|nut)")
+	     {
+         gosub %MatchRes%
+		 ;msgbox, AUDIO INPUT DETECTED :0
+		 global ext = ext
+Gui, Submit, Nohide
+         BatchCommand := "ffmpeg -i %Quote%%ALF%%Quote% -acodec %Aencodercodec% %aEncParam% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %NewRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %NewRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffmpeg -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% -y %Quote%%A_ScriptDir%/%NewFolder%/%name_no_ext%.mp3%Quote%"
+		 transform, ALF, Deref, %ALF%
+         transform, AllowSox, Deref, %AllowSox%
+         transform, BatchCommand, Deref, %BatchCommand%
+
+		 Splashimage,,b w600 h50 x100 Y400 CWsilver m9 b fs10 zh0,Sonifying Image...`n%name_no_ext%
+		 runwait,%comspec% /c %BatchCommand%
+		  
+		 AppendMe1 = %BatchCommand%`n`n
+         Fileappend,%AppendMe1%,fUn\debug\log.txt
+		 Splashimage,off
+		 }
+  	  If RegExMatch(ext,"(u8|s8|u16le|u16be|s16le|s16be|u32le|u32be|s32le|s32be)")
+	  {
+	  msgbox, testing!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	  return
+         gosub %MatchRes%
+		 global ext = ext
+
+         BatchCommand := "ffmpeg -i %Quote%%ALF%%Quote% -acodec %Aencodercodec% %aEncParam% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %NewRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %NewRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffmpeg -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% -y %Quote%%A_ScriptDir%/%NewFolder%/%name_no_ext%.mp3%Quote%"
+		 transform, ALF, Deref, %ALF%
+         transform, AllowSox, Deref, %AllowSox%
+         transform, BatchCommand, Deref, %BatchCommand%
+	 
+		 Splashimage,,b w600 h50 x100 Y400 CWsilver m9 b fs10 zh0,Sonifying Video...`n%name_no_ext%
+		 runwait,%comspec% /c %BatchCommand%
+		  
+		 AppendMe1 = %BatchCommand%`n`n
+         Fileappend,%AppendMe1%,fUn\debug\log.txt
+		 Splashimage,off
+	  }	 	 
+	  }
+	 if ErrorLevel {
+	 msgbox, fuck you did it now, didnt you?
+	 }
+gosub OpenLocation
+return
+
 
 FugAudio:
 Gui,Submit, Nohide
 Run, cmd.exe
 sleep, 666
-Send, ffmpeg %UserInput% -acodec %Aencodercodec% %aEncParam% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffplay -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% {Enter}
+Send, ffmpeg %aEncParam% %UserInput% -acodec %Aencodercodec% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffplay -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% {Enter}
 return
 
 SaveFugAudio:
 data = %A_Sec%%A_Min%%A_Hour%
 makefilename := MD5(data,StrLen(data))
-sfa := "ffmpeg %UserInput% -acodec %Aencodercodec% %aEncParam% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffmpeg -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% -y %NewFolder%/%makefilename%.wav"
+sfa := "ffmpeg %aEncParam% %UserInput% -acodec %Aencodercodec% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffmpeg -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% -y %NewFolder%/%makefilename%.wav"
 transform, sfa, Deref, %sfa%
 Gui,Submit, Nohide
 Runwait, %ComSpec% /c %sfa%,,,pid2
 AppendMe = %sfa%`n`n
-Fileappend,%AppendMe%,fUn\output\log.txt
+Fileappend,%AppendMe%,fUn\debug\log.txt
 Process, Close, %pid3%
 gosub OpenLocation
 return
@@ -755,8 +1043,8 @@ return
 
 
 MultiChannel:
-GuiControlGet, BatchVar ; FIXES THE BATCH ENABLE BUG
-Gui, 4:Color, 884488, -caption
+GuiControlGet, DebugVar ; FIXES THE BATCH ENABLE BUG
+Gui, 4:Color, %GuiColor%, -caption
 Gui 4:Add, Button, x80 y24 w15 h89 gBack3, back
 Gui 4:Add, Button, x80 y5 w15 h15 gExitMulti, x
 Gui 4:Add, Radio, x4 y5 w75 h23 g3chan, 3 Channel
@@ -793,7 +1081,7 @@ Return
 3ChLayout2 = FR
 3ChLayout3 = LFE
 ;
-Gui, 10:Color, 884488, -caption
+Gui, 10:Color, %GuiColor%, -caption
 Gui 10:Add, Button, x139 y245 w110 h42 gDo3Chan, COMMENCE MAGIC
 Gui 10:Add, Button, x139 y287 w44 h23 gSave3ChPls, SAVE
 Gui 10:Add, Button, x183 y287 w66 h23 g3ChInput, INPUT
@@ -827,13 +1115,8 @@ Gui 10:Show, w256 h317, <3 <3 <3
 Return
 
 3ChInput:
-array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
-Sort, array, Random D,
-mystr := RegExReplace(array, ",")
-StringTrimLeft, NewFolder, mystr, 20
-NewFolder = OUTPUT/MultiChannel/%NewFolder%
-msgbox, New Folder Is: %NewFolder%
-transform, NewFolder, Deref, %NewFolder%
+DirectoryVal = MultiChannel
+gosub MakeNewFolder
 
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
@@ -855,7 +1138,7 @@ Do3Ch :=
 "ffmpeg %3ChanFmt% -ar %3ChanSR8% -ac 1 -i %NewFolder%/c-1.meme %3ChanFmt% -ar %3ChanSR8% -ac 1 -i %NewFolder%/c-2.meme %3ChanFmt% -ar %3ChanSR8% -ac 1 -i %NewFolder%/c-3.meme ^
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[ch1][ch2][ch3]join=inputs=3:channel_layout=2.1:map=0.0-%3ChLayout1%|1.0-%3ChLayout2%|2.0-%3ChLayout3%:[a]%Quote% -map [a] %3ChanFmt% -ar %3ChanSR8% -ac 3 - | ffplay -f rawvideo -pix_fmt %PixFmtOut% %3ChanRes% -i - -fs "
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Do3Ch, Deref, %Do3ch%
 Run, cmd.exe
 sleep, 666
@@ -865,21 +1148,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Do3Ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Do3Ch, Deref, %Do3Ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do3Ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do3Ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Do3Ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -900,7 +1183,7 @@ ffmpeg %3ChanFmt% -ar %3ChanSR8% -ac 3 -i %NewFolder%/output.raw -y ^
 -map %Quote%[2]%Quote% %3ChanFmt% -ar %3ChanSR8% -ac 1 %NewFolder%/c-2.meme ^
 -map %Quote%[3]%Quote% %3ChanFmt% -ar %3ChanSR8% -ac 1 %NewFolder%/c-3.meme"
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, 3ChanRender, Deref, %3ChanRender%
 Run, cmd.exe
 Sleep, 88
@@ -910,19 +1193,19 @@ Send, {Enter}
 sleep, 100
 AppendMePls = `n`n%3ChanRender%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, 3ChanRender, Deref, %3ChanRender%
 ;IsBatch := "echo"
 ;BatchCommand := " > run.bat"
-FileDelete, fUn\output\runme.bat
-Fileappend,%3ChanRender%,fUn\output\runme.bat
-Run, cmd.exe /k fUn\output\runme.bat
+FileDelete, fUn\debug\runme.bat
+Fileappend,%3ChanRender%,fUn\debug\runme.bat
+Run, cmd.exe /k fUn\debug\runme.bat
 }
 else {
 ;no
@@ -1024,7 +1307,7 @@ Save3Ch :=
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[ch1][ch2][ch3]join=inputs=3:channel_layout=2.1:map=0.0-%3ChLayout1%|1.0-%3ChLayout2%|2.0-%3ChLayout3%:[a]%Quote% -map [a] %3ChanFmt% -ar %3ChanSR8% -ac 3 - | ffmpeg -f rawvideo -pix_fmt %PixFmtOut% %3ChanRes% %3ChanFR% -i - %OutputVar% "
 )
 Gui, Submit, Nohide
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Save3Ch, Deref, %Save3ch%
 Run, cmd.exe
 sleep, 666
@@ -1034,21 +1317,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Save3Ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
 ;nah
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Save3Ch, Deref, %Save3Ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do3Ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do3Ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Save3Ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -1084,7 +1367,7 @@ return
 4ChLayout3 = FC
 4ChLayout4 = BC
 ;
-Gui, 9:Color, 884488, -caption
+Gui, 9:Color, %GuiColor%, -caption
 Gui 9:Add, Button, x139 y266 w110 h42 gDo4Chan, COMMENCE MAGIC
 Gui 9:Add, Button, x139 y308 w44 h23 gSave4ChPls, SAVE
 Gui 9:Add, Button, x183 y308 w66 h23 g4ChInput, INPUT
@@ -1122,13 +1405,8 @@ Gui 9:Show, w256 h337, <3 <3 <3
 Return
 
 4ChInput:
-array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
-Sort, array, Random D,
-mystr := RegExReplace(array, ",")
-StringTrimLeft, NewFolder, mystr, 20
-NewFolder = OUTPUT/MultiChannel/%NewFolder%
-msgbox, New Folder Is: %NewFolder%
-transform, NewFolder, Deref, %NewFolder%
+DirectoryVal = MultiChannel
+gosub MakeNewFolder
 
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
@@ -1151,7 +1429,7 @@ Do4Ch :=
 %4ChanFmt% -ar %4ChanSR8% -ac 1 -i %NewFolder%/c-4.meme ^
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[3:a]%Ch4af%=%Ch4afVal%[ch4];[ch1][ch2][ch3][ch4]join=inputs=4:channel_layout=4.0:map=0.0-%4ChLayout1%|1.0-%4ChLayout2%|2.0-%4ChLayout3%|3.0-%4ChLayout4%:[a]%Quote% -map [a] %4ChanFmt% -ar %4ChanSR8% -ac 4 - | ffplay -f rawvideo -pix_fmt %PixFmtOut% %4ChanRes% -i - -fs "
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Do4Ch, Deref, %Do4ch%
 Run, cmd.exe
 sleep, 666
@@ -1161,21 +1439,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Do4Ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Do4Ch, Deref, %Do4Ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do4Ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do4Ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Do4Ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -1197,7 +1475,7 @@ ffmpeg %4ChanFmt% -ar %4ChanSR8% -ac 4 -i %NewFolder%/output.raw -y ^
 -map %Quote%[3]%Quote% %4ChanFmt% -ar %4ChanSR8% -ac 1 %NewFolder%/c-3.meme ^
 -map %Quote%[4]%Quote% %4ChanFmt% -ar %4ChanSR8% -ac 1 %NewFolder%/c-4.meme"
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, 4ChanRender, Deref, %4ChanRender%
 Run, cmd.exe
 Sleep, 88
@@ -1207,19 +1485,19 @@ Send, {Enter}
 sleep, 100
 AppendMePls = `n`n%4ChanRender%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, 4ChanRender, Deref, %4ChanRender%
 ;IsBatch := "echo"
 ;BatchCommand := " > run.bat"
-FileDelete, fUn\output\runme.bat
-Fileappend,%4ChanRender%,fUn\output\runme.bat
-Run, cmd.exe /k fUn\output\runme.bat
+FileDelete, fUn\debug\runme.bat
+Fileappend,%4ChanRender%,fUn\debug\runme.bat
+Run, cmd.exe /k fUn\debug\runme.bat
 }
 else {
 ;no
@@ -1323,7 +1601,7 @@ Save4Ch :=
 -map [a] %4ChanFmt% -ar %4ChanSR8% -ac 4 - | ffmpeg -f rawvideo -pix_fmt %PixFmtOut% %4ChanRes% %4ChanFR% -i - %OutputVar% "
 )
 Gui, Submit, Nohide
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Save4Ch, Deref, %Save4ch%
 Run, cmd.exe
 sleep, 666
@@ -1333,21 +1611,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Save4Ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
 ;nah
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Save4Ch, Deref, %Save4Ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do4Ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do4Ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Save4Ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -1386,7 +1664,7 @@ return
 6ChLayout5 = SL
 6ChLayout6 = SR
 ;
-Gui, 7:Color, 884488, -caption
+Gui, 7:Color, %GuiColor%, -caption
 Gui 7:Add, Button, x139 y310 w110 h42 gDo6Chan, COMMENCE MAGIC
 Gui 7:Add, Button, x139 y352 w44 h23 gSave6ChPls, SAVE
 Gui 7:Add, Button, x183 y352 w66 h23 g6ChInput, INPUT
@@ -1424,34 +1702,11 @@ Gui 7:Add, CheckBox, x144 y241 w102 h12, idk?
 Gui 7:Show, w256 h382, <3 <3 <3
 Return
 
-OpenLocation:
-Destination := StrReplace(NewFolder, "/", "\")
-ExpPath := "%A_ScriptDir%\%Destination%"
-transform, ExpPath, Deref, %ExpPath%
-run, % "explorer.exe /e," ExpPath,,,pid3
-return
 
-EnableAudio:
-if (AudioVar = 0) {
-AttemptAudio := ""
-Gui, Submit, Nohide
-}
-else {
-AttemptAudio := "ffplay -vn %UserInput%"
-transform, AttemptAudio, Deref, %AttemptAudio%
-msgbox, %AttemptAudio%
-}
-Gui, Submit, Nohide
-return
 
 6ChInput:
-array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
-Sort, array, Random D,
-mystr := RegExReplace(array, ",")
-StringTrimLeft, NewFolder, mystr, 20
-NewFolder = OUTPUT/MultiChannel/%NewFolder%
-msgbox, New Folder Is: %NewFolder%
-transform, NewFolder, Deref, %NewFolder%
+DirectoryVal = MultiChannel
+gosub MakeNewFolder
 
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
@@ -1474,7 +1729,7 @@ Do6Ch :=
 %6ChanFmt% -ar %6ChanSR8% -ac 1 -i %NewFolder%/c-4.meme %6ChanFmt% -ar %6ChanSR8% -ac 1 -i %NewFolder%/c-5.meme %6ChanFmt% -ar %6ChanSR8% -ac 1 -i %NewFolder%/c-6.meme ^
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[3:a]%Ch4af%=%Ch4afVal%[ch4];[4:a]%Ch5af%=%Ch5afVal%[ch5];[5:a]%Ch6af%=%Ch6afVal%[ch6];[ch1][ch2][ch3][ch4][ch5][ch6]join=inputs=6:channel_layout=5.1(side):map=0.0-%6ChLayout1%|1.0-%6ChLayout2%|2.0-%6ChLayout3%|3.0-%6ChLayout4%|4.0-%6ChLayout5%|5.0-%6ChLayout6%:[a]%Quote% -map [a] %6ChanFmt% -ar %6ChanSR8% -ac 6 - | ffplay -f rawvideo -pix_fmt %PixFmtOut% %6ChanRes% -i - -fs "
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Do6Ch, Deref, %Do6ch%
 Run, cmd.exe
 sleep, 666
@@ -1484,21 +1739,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Do6Ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Do6Ch, Deref, %Do6Ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do6Ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do6Ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Do6Ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -1522,7 +1777,7 @@ ffmpeg %6ChanFmt% -ar %6ChanSR8% -ac 6 -i %NewFolder%/output.raw -y ^
 -map %Quote%[5]%Quote% %6ChanFmt% -ar %6ChanSR8% -ac 1 %NewFolder%/c-5.meme ^
 -map %Quote%[6]%Quote% %6ChanFmt% -ar %6ChanSR8% -ac 1 %NewFolder%/c-6.meme"
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, 6ChanRender, Deref, %6ChanRender%
 Run, cmd.exe
 Sleep, 88
@@ -1532,19 +1787,19 @@ Send, {Enter}
 sleep, 100
 AppendMePls = `n`n%6ChanRender%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, 6ChanRender, Deref, %6ChanRender%
 ;IsBatch := "echo"
 ;BatchCommand := " > run.bat"
-FileDelete, fUn\output\runme.bat
-Fileappend,%6ChanRender%,fUn\output\runme.bat
-Run, cmd.exe /k fUn\output\runme.bat
+FileDelete, fUn\debug\runme.bat
+Fileappend,%6ChanRender%,fUn\debug\runme.bat
+Run, cmd.exe /k fUn\debug\runme.bat
 }
 else {
 ;no
@@ -1648,7 +1903,7 @@ Save6Ch :=
 -map [a] %6ChanFmt% -ar %6ChanSR8% -ac 6 - | ffmpeg -f rawvideo -pix_fmt %PixFmtOut% %6ChanRes% %6ChanFR% -i - %OutputVar% "
 )
 Gui, Submit, Nohide
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Save6Ch, Deref, %Save6ch%
 Run, cmd.exe
 sleep, 666
@@ -1658,21 +1913,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Save6Ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
 ;nah
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Save6Ch, Deref, %Save6Ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do6Ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do6Ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Save6Ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -1701,20 +1956,67 @@ Channel 6: %6ChLayout6%
 return
 
 GetResolution:
+Gui, Submit, Nohide
+ResInput = %UserInput%
+If RegExMatch(ResInput,"(flac|aic|ogg|wav|mp2|mp3)") {
+runwait, %ComSpec% /c ffmpeg %aEncParam% %ResInput% -acodec %Aencodercodec% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% -y testmepls.u8
+
+bitratepls := "ffprobe -show_entries format=bit_rate -v quiet -of csv=s=x:p=0 %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% -i testmepls.u8"
+		 transform, bitratepls, Deref, %bitratepls%
+		 ;run, %ComSpec% /c echo "%bitratepls%" | clip
+		 
+Bitrate := ComObjCreate("WScript.Shell").Exec(bitratepls).StdOut.ReadAll() ;Execute ffprobe and save stdout to variable!
+
+         StringReplace, Bitrate, Bitrate, `r`n, %A_Space%, All ;Remove linebreak from clipboard
+         transform, Bitrate, Deref, %Bitrate%
+		 StringTrimRight, Bitrate2, Bitrate, 4 ; Cut Bitrate length to what ffmpeg normally displays it as.
+		 
+respls := "ffprobe %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% -i testmepls.u8 -show_entries format=duration -v quiet -of csv=s=x:p=0 | clip"
+
+		 transform, respls, Deref, %respls%
+		 runwait, %ComSpec% /c %respls%
+		 StringReplace, clipboard, clipboard, `r`n, %A_Space%, All ;Remove linebreak from clipboard
+		 Duration := clipboard
+		 
+Duration := floor(Duration)
+size := (Duration*Bitrate2)
+width := (size/24)
+width := floor(width)
+height = 1000
+;global swappedRes := -s %width%x%height% ; huehuehue
+
+         GuiControl,, GlobalRes, -s %width%x%height%
+;global SEX := clipboard
+         msgbox, Kind of Converted Audio duration To Resolution -s %width%x%height%`nBitrate Is Now: %Bitrate2%`nOriginally: %Bitrate%
+
+		 ;msgbox, Bitrate %Bitrate%
+		 ;runwait, %ComSpec% /c %respls%
+		 FileDelete, testmepls.u8
+		 return
+}
+else
+
 ResInput = %UserInput%
 respls = "ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 %ResInput% | clip"
 transform, respls, Deref, %respls%
 runwait, cmd.exe /c %respls% ,,Hide
-;;;sleep, 300
+
 StringReplace, clipboard, clipboard, `r`n, %A_Space%, All ;Remove linebreak from clipboard
 GuiControl,, 6ChanRes, -s %clipboard%
 GuiControl,, 8ChanRes, -s %clipboard%
 GuiControl,, 4ChanRes, -s %clipboard%
 GuiControl,, 3ChanRes, -s %clipboard%
 GuiControl,, GlobalRes, -s %clipboard%
+;global SEX := clipboard
+
 msgbox, Using Input File Resolution %clipboard%
 return
 
+SwapRes:
+Swapped = %height%x%width%
+
+GuiControl,, GlobalRes, -s %Swapped%
+Return
 
 Back3:
 Gui, 1:Show
@@ -1735,7 +2037,7 @@ Return
 8ChLayout7 = SL
 8ChLayout8 = SR
 ;
-Gui, 8:Color, 884488, -caption
+Gui, 8:Color, %GuiColor%, -caption
 Gui 8:Add, Button, x139 y363 w110 h42 gDo8Chan, COMMENCE MAGIC
 Gui 8:Add, Button, x139 y405 w44 h23 gSave8ChPls, SAVE
 Gui 8:Add, Button, x183 y405 w66 h23 g8ChInput, INPUT
@@ -1778,13 +2080,8 @@ Return
 
 
 8chInput:
-array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
-Sort, array, Random D,
-mystr := RegExReplace(array, ",")
-StringTrimLeft, NewFolder, mystr, 20
-NewFolder = OUTPUT/MultiChannel/%NewFolder%
-msgbox, New Folder Is: %NewFolder%
-transform, NewFolder, Deref, %NewFolder%
+DirectoryVal = MultiChannel
+gosub MakeNewFolder
 
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
@@ -1808,7 +2105,7 @@ Do8ch :=
 %8chanFmt% -ar %8chanSR8% -ac 1 -i %NewFolder%/c-7.meme %8chanFmt% -ar %8chanSR8% -ac 1 -i %NewFolder%/c-8.meme ^
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[3:a]%Ch4af%=%Ch4afVal%[ch4];[4:a]%Ch5af%=%Ch5afVal%[ch5];[5:a]%Ch6af%=%Ch6afVal%[ch6];[6:a]%Ch7af%=%Ch7afVal%[ch7];[7:a]%Ch8af%=%Ch8afVal%[ch8];[ch1][ch2][ch3][ch4][ch5][ch6][ch7][ch8]join=inputs=8:channel_layout=7.1:map=0.0-%8chLayout1%|1.0-%8chLayout2%|2.0-%8chLayout3%|3.0-%8chLayout4%|4.0-%8chLayout5%|5.0-%8chLayout6%|6.0-%8chLayout7%|7.0-%8chLayout8%:[a]%Quote% -map [a] %8chanFmt% -ar %8chanSR8% -ac 8 - | ffplay -f rawvideo -pix_fmt %PixFmtOut% %8chanRes% -i - -fs "
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Do8ch, Deref, %Do8ch%
 Run, cmd.exe
 sleep, 666
@@ -1818,21 +2115,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Do8ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Do8ch, Deref, %Do8ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do8ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do8ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Do8ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -1857,7 +2154,7 @@ ffmpeg %8chanFmt% -ar %8chanSR8% -ac 8 -i %NewFolder%/output.raw -y ^
 -map %Quote%[7]%Quote% %8chanFmt% -ar %8chanSR8% -ac 1 %NewFolder%/c-7.meme ^
 -map %Quote%[8]%Quote% %8chanFmt% -ar %8chanSR8% -ac 1 %NewFolder%/c-8.meme"
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, 8chanRender, Deref, %8chanRender%
 Run, cmd.exe
 Sleep, 88
@@ -1867,19 +2164,19 @@ Send, {Enter}
 sleep, 100
 AppendMePls = `n`n%8chanRender%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, 8chanRender, Deref, %8chanRender%
 ;IsBatch := "echo"
 ;BatchCommand := " > run.bat"
-FileDelete, fUn\output\runme.bat
-Fileappend,%8chanRender%,fUn\output\runme.bat
-Run, cmd.exe /k fUn\output\runme.bat
+FileDelete, fUn\debug\runme.bat
+Fileappend,%8chanRender%,fUn\debug\runme.bat
+Run, cmd.exe /k fUn\debug\runme.bat
 }
 else {
 ;no
@@ -1983,7 +2280,7 @@ Save8ch :=
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[3:a]%Ch4af%=%Ch4afVal%[ch4];[4:a]%Ch5af%=%Ch5afVal%[ch5];[5:a]%Ch6af%=%Ch6afVal%[ch6];[6:a]%Ch7af%=%Ch7afVal%[ch7];[7:a]%Ch6af%=%Ch8afVal%[ch8];[ch1][ch2][ch3][ch4][ch5][ch6][ch7][ch8]join=inputs=8:channel_layout=7.1:map=0.0-%8chLayout1%|1.0-%8chLayout2%|2.0-%8chLayout3%|3.0-%8chLayout4%|4.0-%8chLayout5%|5.0-%8chLayout6%|6.0-%8chLayout7%|7.0-%8chLayout8%:[a]%Quote% -map [a] %8chanFmt% -ar %8chanSR8% -ac 8 - | ffmpeg -f rawvideo -pix_fmt %PixFmtOut% %8chanRes% %8chanFR% -i - %OutputVar% "
 )
 Gui, Submit, Nohide
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Save8ch, Deref, %Save8ch%
 Run, cmd.exe
 sleep, 666
@@ -1993,21 +2290,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Save8ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
 ;nah
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Save8ch, Deref, %Save8ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do8ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do8ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Save8ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -2053,7 +2350,7 @@ msgbox, wao
 12ChLayout7 = SL
 12ChLayout8 = SR
 ;
-Gui, 11:Color, 884488, -caption
+Gui, 11:Color, %GuiColor%, -caption
 Gui 11:Add, Button, x139 y462 w110 h42 gDo12Chan, COMMENCE MAGIC
 Gui 11:Add, Button, x139 y504 w44 h23 gSave12ChPls, SAVE
 Gui 11:Add, Button, x183 y504 w66 h23 g12ChInput, INPUT
@@ -2105,13 +2402,8 @@ Return
 
 
 12chInput:
-array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
-Sort, array, Random D,
-mystr := RegExReplace(array, ",")
-StringTrimLeft, NewFolder, mystr, 20
-NewFolder = OUTPUT/MultiChannel/%NewFolder%
-msgbox, New Folder Is: %NewFolder%
-transform, NewFolder, Deref, %NewFolder%
+DirectoryVal = MultiChannel
+gosub MakeNewFolder
 
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
@@ -2136,7 +2428,7 @@ Do12ch :=
 %12chanFmt% -ar %12chanSR8% -ac 1 -i %NewFolder%/c-10.meme %12chanFmt% -ar %12chanSR8% -ac 1 -i %NewFolder%/c-11.meme %12chanFmt% -ar %12chanSR8% -ac 1 -i %NewFolder%/c-12.meme ^
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[3:a]%Ch4af%=%Ch4afVal%[ch4];[4:a]%Ch5af%=%Ch5afVal%[ch5];[5:a]%Ch6af%=%Ch6afVal%[ch6];[6:a]%Ch7af%=%Ch7afVal%[ch7];[7:a]%Ch8af%=%Ch8afVal%[ch8];[8:a]%Ch9af%=%Ch9afVal%[ch9];[9:a]%Ch10af%=%Ch10afVal%[ch10];[10:a]%Ch11af%=%Ch11afVal%[ch11];[11:a]%Ch12af%=%Ch12afVal%[ch12];[ch1][ch2][ch3][ch4][ch5][ch6][ch7][ch8][ch9][ch10][ch11][ch12]amerge=inputs=12[a]%Quote% -map [a] %12chanFmt% -ar %12chanSR8% -ac 12 - | ffplay -f rawvideo -pix_fmt %PixFmtOut% %12chanRes% -i - -fs "
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Do12ch, Deref, %Do12ch%
 Run, cmd.exe
 sleep, 666
@@ -2146,21 +2438,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Do12ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Do12ch, Deref, %Do12ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do12ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do12ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Do12ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -2190,7 +2482,7 @@ ffmpeg %12chanFmt% -ar %12chanSR8% -ac 12 -i %NewFolder%/output.raw -y ^
 -map %Quote%[a10]%Quote% %12chanFmt% -ar %12chanSR8% -ac 1 %NewFolder%/c-11.meme ^
 -map %Quote%[a11]%Quote% %12chanFmt% -ar %12chanSR8% -ac 1 %NewFolder%/c-12.meme "
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, 12chanRender, Deref, %12chanRender%
 Run, cmd.exe
 Sleep, 88
@@ -2200,19 +2492,19 @@ Send, {Enter}
 sleep, 100
 AppendMePls = `n`n%12chanRender%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, 12chanRender, Deref, %12chanRender%
 ;IsBatch := "echo"
 ;BatchCommand := " > run.bat"
-FileDelete, fUn\output\runme.bat
-Fileappend,%12chanRender%,fUn\output\runme.bat
-Run, cmd.exe /k fUn\output\runme.bat
+FileDelete, fUn\debug\runme.bat
+Fileappend,%12chanRender%,fUn\debug\runme.bat
+Run, cmd.exe /k fUn\debug\runme.bat
 }
 else {
 ;no
@@ -2317,7 +2609,7 @@ Save12ch :=
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[3:a]%Ch4af%=%Ch4afVal%[ch4];[4:a]%Ch5af%=%Ch5afVal%[ch5];[5:a]%Ch6af%=%Ch6afVal%[ch6];[6:a]%Ch7af%=%Ch7afVal%[ch7];[7:a]%Ch8af%=%Ch8afVal%[ch8];[8:a]%Ch8af%=%Ch8afVal%[ch9];[9:a]%Ch10af%=%Ch10afVal%[ch10];[10:a]%Ch6af%=%Ch11afVal%[ch11];[11:a]%Ch6af%=%Ch12afVal%[ch12];[ch1][ch2][ch3][ch4][ch5][ch6][ch7][ch8][ch9][ch10][ch11][ch12]amerge=inputs=12[a]%Quote% -map [a] %12chanFmt% -ar %12chanSR8% -ac 12 - | ffmpeg -f rawvideo -pix_fmt %PixFmtOut% %12chanRes% %12chanFR% -i - %OutputVar% "
 )
 Gui, Submit, Nohide
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Save12ch, Deref, %Save12ch%
 Run, cmd.exe
 sleep, 666
@@ -2327,21 +2619,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Save12ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
 ;nah
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Save12ch, Deref, %Save12ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do12ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do12ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Save12ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -2396,7 +2688,7 @@ msgbox, wao
 16ChLayout15 = WL
 16ChLayout16 = WR
 ;
-Gui 12:Color, 884488, -caption
+Gui 12:Color, %GuiColor%, -caption
 Gui 12:Add, Button, x139 y562 w110 h42 gDo16Chan, COMMENCE MAGIC
 Gui 12:Add, Button, x139 y604 w44 h23 gSave16ChPls, SAVE
 Gui 12:Add, Button, x183 y604 w66 h23 g6ChInput, INPUT
@@ -2456,13 +2748,8 @@ Return
 
 
 16chInput:
-array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
-Sort, array, Random D,
-mystr := RegExReplace(array, ",")
-StringTrimLeft, NewFolder, mystr, 20
-NewFolder = OUTPUT/MultiChannel/%NewFolder%
-msgbox, New Folder Is: %NewFolder%
-transform, NewFolder, Deref, %NewFolder%
+DirectoryVal = MultiChannel
+gosub MakeNewFolder
 
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
@@ -2488,7 +2775,7 @@ Do16Ch :=
 %16chanFmt% -ar %16chanSR8% -ac 1 -i %NewFolder%/c-13.meme %16chanFmt% -ar %16chanSR8% -ac 1 -i %NewFolder%/c-14.meme %16chanFmt% -ar %16chanSR8% -ac 1 -i %NewFolder%/c-15.meme %16chanFmt% -ar %16chanSR8% -ac 1 -i %NewFolder%/c-16.meme ^
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[3:a]%Ch4af%=%Ch4afVal%[ch4];[4:a]%Ch5af%=%Ch5afVal%[ch5];[5:a]%Ch6af%=%Ch6afVal%[ch6];[6:a]%Ch7af%=%Ch7afVal%[ch7];[7:a]%Ch8af%=%Ch8afVal%[ch8];[8:a]%Ch9af%=%Ch9afVal%[ch9];[9:a]%Ch10af%=%Ch10afVal%[ch10];[10:a]%Ch11af%=%Ch11afVal%[ch11];[11:a]%Ch12af%=%Ch12afVal%[ch12];[12:a]%Ch13af%=%Ch13afVal%[ch13];[13:a]%Ch14af%=%Ch14afVal%[ch14];[14:a]%Ch15af%=%Ch15afVal%[ch15];[15:a]%Ch16af%=%Ch16afVal%[ch16];[ch1][ch2][ch3][ch4][ch5][ch6][ch7][ch8][ch9][ch10][ch11][ch12][ch13][ch14][ch15][ch16]join=inputs=16:channel_layout=hexadecagonal:map=0.0-%16chLayout1%|1.0-%16chLayout2%|2.0-%16chLayout3%|3.0-%16chLayout4%|4.0-%16chLayout5%|5.0-%16chLayout6%|6.0-%16chLayout7%|7.0-%16chLayout8%|8.0-%16chLayout9%|9.0-%16chLayout10%|10.0-%16chLayout11%|11.0-%16chLayout12%|12.0-%16chLayout13%|13.0-%16chLayout14%|14.0-%16chLayout15%|15.0-%16chLayout16%:[a]%Quote% -map [a] %16chanFmt% -ar %16chanSR8% -ac 16 - | ffplay -f rawvideo -pix_fmt %PixFmtOut% %16chanRes% -i - -fs "
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Do16ch, Deref, %Do16ch%
 Run, cmd.exe
 sleep, 666
@@ -2498,21 +2785,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Do16ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Do16ch, Deref, %Do16ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do16ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do16ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Do16ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -2545,7 +2832,7 @@ ffmpeg %16chanFmt% -ar %16chanSR8% -ac 16 -i %NewFolder%/output.raw -y ^
 -map %Quote%[15]%Quote% %16chanFmt% -ar %16chanSR8% -ac 1 %NewFolder%/c-15.meme ^
 -map %Quote%[16]%Quote% %16chanFmt% -ar %16chanSR8% -ac 1 %NewFolder%/c-16.meme"
 )
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, 16chanRender, Deref, %16chanRender%
 Run, cmd.exe
 Sleep, 88
@@ -2555,19 +2842,19 @@ Send, {Enter}
 sleep, 100
 AppendMePls = `n`n%16chanRender%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
-;msgbox, wao2 %BatchVar%
+;msgbox, wao2 %DebugVar%
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, 16chanRender, Deref, %16chanRender%
 ;IsBatch := "echo"
 ;BatchCommand := " > run.bat"
-FileDelete, fUn\output\runme.bat
-Fileappend,%16chanRender%,fUn\output\runme.bat
-Run, cmd.exe /k fUn\output\runme.bat
+FileDelete, fUn\debug\runme.bat
+Fileappend,%16chanRender%,fUn\debug\runme.bat
+Run, cmd.exe /k fUn\debug\runme.bat
 }
 else {
 ;no
@@ -2673,7 +2960,7 @@ Save16ch :=
 -filter_complex %Quote%[0:a]%Ch1af%=%Ch1afVal%[ch1];[1:a]%Ch2af%=%Ch2afVal%[ch2];[2:a]%Ch3af%=%Ch3afVal%[ch3];[3:a]%Ch4af%=%Ch4afVal%[ch4];[4:a]%Ch5af%=%Ch5afVal%[ch5];[5:a]%Ch6af%=%Ch6afVal%[ch6];[6:a]%Ch7af%=%Ch7afVal%[ch7];[7:a]%Ch8af%=%Ch8afVal%[ch8];[8:a]%Ch9af%=%Ch9afVal%[ch9];[9:a]%Ch10af%=%Ch10afVal%[ch10];[10:a]%Ch11af%=%Ch11afVal%[ch11];[11:a]%Ch12af%=%Ch12afVal%[ch12];[12:a]%Ch13af%=%Ch13afVal%[ch13];[13:a]%Ch14af%=%Ch14afVal%[ch14];[14:a]%Ch15af%=%Ch15afVal%[ch15];[15:a]%Ch16af%=%Ch16afVal%[ch16];[ch1][ch2][ch3][ch4][ch5][ch6][ch7][ch8][ch9][ch10][ch11][ch12][ch13][ch14][ch15][ch16]join=inputs=16:channel_layout=hexadecagonal:map=0.0-%16chLayout1%|1.0-%16chLayout2%|2.0-%16chLayout3%|3.0-%16chLayout4%|4.0-%16chLayout5%|5.0-%16chLayout6%|6.0-%16chLayout7%|7.0-%16chLayout8%|8.0-%16chLayout9%|9.0-%16chLayout10%|10.0-%16chLayout11%|11.0-%16chLayout12%|12.0-%16chLayout13%|13.0-%16chLayout14%|14.0-%16chLayout15%|15.0-%16chLayout16%:[a]%Quote% -map [a] %16chanFmt% -ar %16chanSR8% -ac 16 - | ffmpeg -f rawvideo -pix_fmt %PixFmtOut% %16chanRes% %16chanFR% -i - %OutputVar% "
 )
 Gui, Submit, Nohide
-if (BatchVar = 0) {
+if (DebugVar = 0) {
 transform, Save16ch, Deref, %Save16ch%
 Run, cmd.exe
 sleep, 666
@@ -2683,21 +2970,21 @@ Send {Enter}
 sleep, 100
 AppendMePls = `n`n%Save16ch%`n`n
 transform, AppendMePls, Deref, %AppendMePls%
-Fileappend,%AppendMePls%,fUn\output\log.txt
+Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
 }
 else {
 ;nah
 }
-if (BatchVar = 1) {
+if (DebugVar = 1) {
 transform, Save16ch, Deref, %Save16ch%
-FileDelete, fUn\output\runme.bat
-;Fileappend,%Do16ch%,fUn\output\runme.bat
-file := FileOpen( "fUn\output\poop.bat", 1)
+FileDelete, fUn\debug\runme.bat
+;Fileappend,%Do16ch%,fUn\debug\runme.bat
+file := FileOpen( "fUn\debug\poop.bat", 1)
 file.Write(Save16ch)
 file.Close()
 sleep, 100
-Run, cmd.exe /k fUn\output\poop.bat
+Run, cmd.exe /k fUn\debug\poop.bat
 }
 else {
 ;no
@@ -2793,7 +3080,7 @@ return
 ;else {
 ;msgbox, Shuffle Mode Disabled!
 ;}
-;if (BatchVar = 1) {
+;if (DebugVar = 1) {
 ;transform, Do6Ch, Deref, %Do6Ch%
 ;msgbox, Shuffle Mode Enabled!
 ;}
@@ -2814,7 +3101,7 @@ Sleep 500,
 Send, "ffmglitch-Input Version.bat" {Enter}
 F6:: ; TESTING CLIPBOARD SHIT
 AppendMe = %clipboard%`n`n
-Fileappend,%AppendMe%,fUn\output\log.txt
+Fileappend,%AppendMe%,fUn\debug\log.txt
 return
 F9::Run, fUn/ShittyWebcam.exe,,Hide ; orginally made by a friend to corrupt my streams in realtime ; sends random udp data to 127.0.0.1:1337 ; Will release sauce once we find it
 F10::Process,Close, ShittyWebcam.exe
@@ -2830,7 +3117,8 @@ return
 toggle = 0
 #MaxThreadsPerHotkey 2
 
-F5:: ; Use with FFplay or pReViEw with a databent compressed video for best results. Also try having the video paused when doing so ;3
+CapsLock & F1:: ; Use with FFplay or pReViEw with a databent compressed video for best results. Also try having the video paused when doing so ;3
+
     Toggle := !Toggle
      While Toggle{
         Send, {rbutton}
@@ -2843,6 +3131,7 @@ msgbox,  Deleting OUTPUT Directory Contents...
 FileRemoveDir, OUTPUT\MultiChannel, 1
 FileRemoveDir, OUTPUT\SonifyVideo, 1
 FileRemoveDir, OUTPUT\SonifyAudio, 1
+FileRemoveDir, OUTPUT\SonifyBatch, 1
 }
 else {
 }
