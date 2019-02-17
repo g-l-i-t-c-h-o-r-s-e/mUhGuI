@@ -42,5 +42,5 @@
 ##ETC, ETC, ETC.
 #Added FFMpeg Download Version options if user is missing FFMpeg.
 ##Updated unzipmove.ahk for the above changes.
-
+##Changed default Sonification Channel Count to 3 For BGR24 compatibility.
 
