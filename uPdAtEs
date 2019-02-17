@@ -40,5 +40,7 @@
 #Changed the Mouse RightClick spam toggle to use CapsLock & F1 instead of just F5.
 #A lot of work on the Audio Sonification stuff on the KMS section.
 ##ETC, ETC, ETC.
+#Added FFMpeg Download Version options if user is missing FFMpeg.
+##Updated unzipmove.ahk for the above changes.
 
 
