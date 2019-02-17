@@ -545,10 +545,10 @@ Gui, 3:Add, Text, x32 y29 w410 h30 , Pretty much a groovy way to kinda trick ffm
 Gui, 3:Add, Button, x282 y249 w10 h20 , ?
 Gui, 3:Add, Button, x182 y249 w10 h20 gFrei0rPreset1, ?
 ; Added Channel Count
-Gui, 3:Add, ComboBox, x2 y319 w40 h21 vChanCount2 Choose2, 1|2|3|4|5||6|7|8|9|10
-Gui, 3:Add, ComboBox, x2 y299 w40 h20 vChanCount1 Choose2, 1|2|3|4|5||6|7|8|9|10
-Gui, 3:Add, ComboBox, x432 y299 w40 h20  vChanCount4 Choose2, 1|2|3|4|5||6|7|8|9|10
-Gui, 3:Add, ComboBox, x432 y319 w40 h21 vChanCount3 Choose2, 1|2|3|4|5||6|7|8|9|10
+Gui, 3:Add, ComboBox, x2 y319 w40 h200 vChanCount2 Choose2, 1|2|3|4|5||6|7|8|9|10|11|12|13|14|15|16|17|18|19|20
+Gui, 3:Add, ComboBox, x2 y299 w40 h200 vChanCount1 Choose2, 1|2|3|4|5||6|7|8|9|10|11|12|13|14|15|16|17|18|19|20
+Gui, 3:Add, ComboBox, x432 y299 w40 h200 vChanCount4 Choose3, 1|2|3|4|5||6|7|8|9|10|11|12|13|14|15|16|17|18|19|20
+Gui, 3:Add, ComboBox, x432 y319 w40 h200 vChanCount3 Choose3, 1|2|3|4|5||6|7|8|9|10|11|12|13|14|15|16|17|18|19|20
 ;Added Checkbox for SOX
 Gui, 3:Add, Checkbox, x195 y330 w102 h12 vSoxVar gEnableSox, Enable Sox?
 Gui, 3:Add, Checkbox, x195 y342 w102 h12 vNibbleVar gEnableNibble, Reverse Nibbles? 
