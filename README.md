@@ -6,7 +6,7 @@ Anywhore uncompressed formats work the best together, different pixel formats ca
 Let your i m a g i n a t i o n run wild.
 It's kind of a hit and miss with which formats will work together, but you'll find that out.
 Some Codec combinations could actually deafen you, lower your shizzit. Some form glitchy melodies~
-I've included a compiled version if you don't have or wan't to install AutoHotKey.
+I've included a compiled version if you don't have or wan't to install AutoHotkey.
 
 On the KMS Section is where you'll find Video/Image Sonification as well as the obscure "Audio Sonification" as I losely call it. I'll write a bettter explenation for all this soon.
 
@@ -29,7 +29,7 @@ This version starts as soon as it's executed, so I bound some hotkeys to start/k
 ![nin](https://cloud.githubusercontent.com/assets/17163949/24837321/fe5fe658-1cee-11e7-9d92-4cc19cf1fa25.gif)
 
 # rEqUiReMeNtS
-[AutoHotKey](https://autohotkey.com/) (if you wanna edit)
+[AutoHotkey](https://autohotkey.com/) (if you wanna edit)
 
 [FFMpeg Windows Build](https://ffmpeg.zeranoe.com/builds/)
 
