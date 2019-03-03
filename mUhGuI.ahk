@@ -3,12 +3,14 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
+
 GetFFMPEG() ;Executes if User doesnt have ffmpeg or mUhGuI in PATH env variable.
 {
 Gui, 14:Add, Button, x68 y65 w70 h24 gPrefer, Preferred
 Gui, 14:Add, Button, x247 y65 w54 h24 gRecent, Latest
 Gui, 14:Add, Text, x5 y5 w358 h27, `n           It looks like you dont have ffmpeg, pls select a version bb <3
 Gui, 14:Show, w368 h96,START YOUR ENGINES!!!
+Gui, 14:-Sysmenu
 return
 
 Prefer:
@@ -40,7 +42,7 @@ runwait, %A_ScriptDir%/fUn/unzipmove.ahk ; run external ahk to perform actions t
 }
 else
 
-Quote = " ; Damn Windows not letting me escape characters
+Quote := chr(0x22) ; Damn Windows not letting me escape characters
 ActivateBinaryVar = 0 ; NEED THIS
 global GuiColor = 884488
 global comb := "m|e|m|e"
@@ -222,6 +224,7 @@ Gui, Add, ComboBox,  x378 y357 w110 h88 vEncoderchoice Choose66, %List%
 Gui, Add, Text, +BackgroundTrans x404 y389 w190 h20 , Video Encoders && Decoders
 Gui, Add, Text, +BackgroundTrans x122 y389 w170 h20 , Audio Decoders && Encoders
 Gui, Add, ComboBox,  x200 y357 w115 h88 vADecoderchoice Choose157, %List3%
+Gui, Add, ComboBox,  x110 y357 w100 h88 vAEncoderchoice Choose68, %List2%
 Gui Add, Picture, x-1 y-13 w659 h340 +BackgroundTrans , %A_ScriptDir%\fUn\background.bmp
 Gui Add, Picture, x-11 y-12 w659 h325 +BackgroundTrans, %A_ScriptDir%\fUn\overlay.png
 Gui, Show,,WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!! :'D ;Gui Bug Fix
@@ -238,11 +241,11 @@ Gui, Add, CheckBox, x2 y330 w10 h14 vEnableCleanUpModeVar gEnableCleanUpMode, te
 Gui, Add, CheckBox, x15 y330 w10 h14 vEnableBinaryVar gEnableBinaryMode, test
 Gui, Add, Button, x57 y361 w8 h52  gUDPOverload,PLS
 Gui, Add, Button, x97 y361 w8 h52  gSaveIt,SAVE
-Gui, Add, ComboBox,  x110 y357 w100 h88 vAEncoderchoice Choose68, %List2%
 Gui, Add, ComboBox,  x53 y418 w68 h88 vPixfmt Choose29, %List4%
 Gui, Add, ComboBox,  x578 y418 w68 h88 vPixfmtdec Choose29, %List5%
 Gui, Add, Edit, x410 y409 w140 h20 vDecoderSetting,-ar 4000 -af volume=0.5
 Gui, Add, Edit, x132 y409 w150 h20 vEncoderSetting,-ar 8000 -f avi -s 640x360
+gosub GetPresetWindow
 goto wao
 Return
 
@@ -275,10 +278,19 @@ MakeNewFolder:
 array = A,B,C,D,E,F,G,H,I,J,K,L,N,M,O,P,Q,R,S,T,U,V,W,X,Y,Z,1,2,3,4,5,6,7,8,9
 Sort, array, Random D,
 mystr := RegExReplace(array, ",")
-StringTrimLeft, NewFolder, mystr, 20
-NewFolder = OUTPUT/%DirectoryVal%/%NewFolder%
-msgbox, New Folder Is: %NewFolder%
+StringTrimLeft, RandyNums, mystr, 20
+NewFolder := "OUTPUT/%DirectoryVal%/%RandyNums%" ;;ADDED GLOBAL HERE WARNING
 transform, NewFolder, Deref, %NewFolder%
+{
+;WinGetPos X, Y, Width, Height, A
+MaxX := A_ScreenWidth - 550
+MaxY := A_ScreenHeight - 90
+Splashimage,,b w600 h50 x%MaxX% y%MaxY% CWsilver m9 b fs10 zh0,New Folder Is: %NewFolder%
+;msgbox, New Folder Is: %NewFolder%
+sleep, 500
+}
+splashimage,off
+
 return
 
 EnableDebugMode:
@@ -362,6 +374,8 @@ Gui, Submit, Nohide
 return
 
 wao:
+{
+#IfWinActive, WARNING!!! MAY CAUSE SEIZURES HEARING LOSS AND MENTAL ILLNESS!!
 ~up::
 Loop, parse, comb, |
 {
@@ -372,6 +386,8 @@ return
 msgbox, You Must Construct Additional Pylons...
 gosub pls
 return
+}
+#IfWinActive
 
 pls:
 loop {
@@ -389,9 +405,12 @@ gui 10:color, %RanNumb%
 gui 11:color, %RanNumb%
 gui 12:color, %RanNumb%
 gui 13:color, %RanNumb%
+gui wao:color, %RanNumb%
+;GuiControl,,aDecSmplr8, %aDecSmplr8%
 sleep, 100
 }
 return
+
 
 SaveIt:
 Gui,Submit, Nohide
@@ -403,7 +422,7 @@ return
 
 LocalGlitch:
 Gui, Submit, Nohide
-SendStream := " %UserInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% - | "
+SendStream := " %NewerInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% - | "
 transform, SendStream, Deref, %SendStream%
 PlayStream := "ffplay -vcodec %Decoderchoice% -acodec %ADecoderchoice% -vf format=%Pixfmtdec% %DecoderSetting% -i - "
 transform, PlayStream, Deref, %PlayStream%
@@ -450,20 +469,30 @@ IfInString, UserInput, %extension% ; check if file extension is gif, if so use a
 {
 Gui,Submit, Nohide
 AllowLoop := "-ignore_loop 0"
-Run, cmd.exe /k "ffplay %AllowLoop% %UserInput%"
+Run, cmd.exe /k "ffplay %AllowLoop% %NewerInput%"
 ;newinput3 := UserInput ; this might also cause bug!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
 else {
-Run, cmd.exe /k "ffplay %AllowLoop% %UserInput%"
+Run, cmd.exe /k "ffplay %AllowLoop% %NewerInput%"
 }
 return
 
 ; Added native file browser, input flag and double quotes for filenames with spaces in them
 Input:
+Gui, Submit, Nohide
 FileSelectFile, UserInput
+Plusss := chr(43)
 AddFFMpegInputFlagToCommand := "-i "
-UserInput = %AddFFMpegInputFlagToCommand%%Quote%%UserInput%%Quote%
+;UserInput := StrReplace(UserInput, "!", "{!}")
+UserInput := StrReplace(UserInput, "`+", Plusss)
+;UserInput := StrReplace(UserInput, "-", "{-}")
+NewerInput = %AddFFMpegInputFlagToCommand%%Quote%%UserInput%%Quote%
+GuiControl, 3:, aEncParam, -ss 00:00:00 ;Reset Audio Encoder Param to avoid duration conflict
+GuiControl, 3:, vEncParam, -ss 00:00:00 ;Reset Video Encoder Param to avoid duration conflict
 Gui, 13:Destroy ; quick fix for closing the "Sauce" input windows.
+;GuiControlGet, PlsNoNewFolderVar,13:, PlsNoNewFolder
+iniWrite, %PlsNoNewFolder%, Configuration.ini, NoNewFolder , PlsNoNewFolderVar ;quick fix to save a checkbox config
+
 return
 
 SaveMe:
@@ -492,6 +521,32 @@ Decoder Pixel Format = %Pixfmtdec%
 return
 
 AudioAndVideoSonification:
+ {
+   DirectoryVal = SonifyBatch
+  gosub MakeNewFolder
+FileCreateDir, OUTPUT\SonifyBatch
+FileCreateDir, %NewFolder%
+ }
+ {
+   DirectoryVal = SonifyVideo
+ gosub MakeNewFolder
+FileCreateDir, OUTPUT\SonifyVideo
+FileCreateDir, %NewFolder%
+ }
+
+ {
+   DirectoryVal = SonifyAudioBatch
+  gosub MakeNewFolder
+FileCreateDir, OUTPUT\SonifyAudioBatch
+FileCreateDir, %NewFolder%
+ }
+
+ {
+   DirectoryVal = SonifyAudio
+ gosub MakeNewFolder
+FileCreateDir, OUTPUT\SonifyAudio
+FileCreateDir, %NewFolder%
+ }
 Gui,Submit, Nohide
 Gui, 3:Color, %GuiColor%, -caption
 Gui, 3:Add, Button, gFugvideo x302 y279 w130 h60 , fUcKiNg dO iT
@@ -529,7 +584,7 @@ Gui, 3:Add, Text, x2 y339 w60 h20 , Sample R8
 Gui, 3:Add, Slider, x312 y339 w100 h20 Tooltip VvDecSmplr8 TickInterval2 Range666-88100, 8000
 Gui, 3:Add, Slider, x312 y359 w100 h20 , 25
 Gui, 3:Add, Text, x422 y339 w60 h20 , Sample R8
-Gui, 3:Add, Slider, x62 y339 w100 h20 Tooltip VaDecSmplr8 TickInterval2 Range666-88100, 44100
+Gui, 3:Add, Slider, x62 y339 w100 h20 Tooltip VaDecSmplr8 TickInterva500 Range1000-199999, 44100
 Gui, 3:Add, Text, x2 y359 w60 h20 , Volume
 Gui, 3:Add, Text, x422 y359 w60 h20 , Volume
 Gui, 3:Add, Button, x2 y142 w40 h35 gPLSBATCH2, batch
@@ -540,6 +595,7 @@ Gui, 3:Add, Edit, x197 y159 w80 h20 VGlobalRes , -s 640x360
 Gui, 3:Add, Button, x264 y137 w13 h13 gSwapRes,
 Gui, 3:Add, Button, x432 y142 w40 h35 gPLSBATCH, batch
 Gui, 3:Add, Checkbox, right x412 y115 w60 h23 0x80 vBatchMatchResVar, Match Res?
+Gui, 3:Add, Checkbox, right x396 y90 h23 0x80 vFullSCreenVar gIsFullscreen, Fullscreen?
 Gui, 3:Add, GroupBox, x12 y9 w440 h60 , *notices GUI* oWo Wats This?~
 Gui, 3:Add, Text, x32 y29 w410 h30 , Pretty much a groovy way to kinda trick ffmpeg to sonify video`, compress audio data with video codecs`, process audio with video effects`, etc in real time... (and with SOX)
 Gui, 3:Add, Button, x282 y249 w10 h20 , ?
@@ -559,6 +615,8 @@ Gui, 3:Add, ComboBox, x177 y99 h500 vLePixFmtIn Choose4, %list4%
 Gui, 3:Add, ComboBox, x177 y77 h500 vLePixFmtOut Choose4, %list4%
 Gui, 3:Show, x328 y144 h395 w477, ITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENINGITSHAPPENING
 Gui, 3:-Sysmenu
+Gui, 1:Hide
+gosub GetPresetWindow
 Return
 
 Frei0rPreset1:
@@ -568,7 +626,14 @@ return
 
 Inputv:
 DirectoryVal = SonifyVideo
-gosub MakeNewFolder
+iniRead, NoNewFolder, Configuration.ini, NoNewFolder, PlsNoNewFolderVar
+IsNewFolder = MakeNewFolder
+if (NoNewFolder = 1) 
+{
+IsNewFolder = no
+}
+
+gosub %IsNewFolder%
 
 FileCreateDir, OUTPUT\SonifyVideo
 FileCreateDir, %NewFolder%
@@ -580,6 +645,8 @@ transform, clipboardnew, Deref, %clipboardnew%
 Gui, 13:Add, Edit, x5 y36 w358 h24 vInputVvar, %clipboardnew%
 Gui, 13:Add, Button, x68 y65 w70 h24 gInput, Select File
 Gui, 13:Add, Button, x247 y65 w54 h24 gDefaultInputV, Default
+Gui, 13:Add, Checkbox, x145 y65 vPlsNoNewFolder,Disable`nNew Folder
+GuiControl, 13:, PlsNoNewFolder, %NoNewFolder%
 Gui, 13:Add, Text, x5 y5 w358 h27, Pls Use -i And Enter Input File Path 4 Now...
 OnMessage(0x100, "OnKeyDown")
 OnKeyDown(wParam)
@@ -588,8 +655,9 @@ if (A_Gui = 13 && wParam = 13) ;Close GUI after hitting ENTER Key
 {
  Gui, Submit, Nohide
  GuiControlGet, InputVvar
- global UserInput = InputVvar
- ;GuiControl,, InputVvar, %UserInput%
+ GuiControlGet, IsANewFolder,13:, PlsNoNewFolder
+ global NewerInput = InputVvar
+iniWrite, %IsANewFolder%, Configuration.ini, NoNewFolder , PlsNoNewFolderVar ;quick fix to save a checkbox config
  Gui, 13:Destroy
 }
 }
@@ -599,12 +667,20 @@ Return
 DefaultInputV:
 Gui, Submit, Nohide
 GuiControl,, InputVvar, -f lavfi -i testsrc2=s=640x360
+iniWrite, %PlsNoNewFolder%, Configuration.ini, NoNewFolder , PlsNoNewFolderVar ;quick fix to save a checkbox config
 Return
 
 Inputa:
+Gui, Submit, Nohide
 DirectoryVal = SonifyAudio
-gosub MakeNewFolder
+iniRead, NoNewFolder, Configuration.ini, NoNewFolder, PlsNoNewFolderVar
+IsNewFolder = MakeNewFolder
+if (NoNewFolder = 1) 
+{
+IsNewFolder = no
+}
 
+gosub %IsNewFolder%
 FileCreateDir, OUTPUT\SonifyAudio
 FileCreateDir, %NewFolder%
 
@@ -614,6 +690,8 @@ transform, clipboardnew, Deref, %clipboardnew%
 Gui, 13:Add, Edit, x5 y36 w358 h24 vInputAvar, %clipboardnew%
 Gui, 13:Add, Button, x68 y65 w70 h24 gInput, Select File
 Gui, 13:Add, Button, x247 y65 w54 h24 gDefaultInputA, Default
+Gui, 13:Add, Checkbox, x145 y65 vPlsNoNewFolder,Disable`nNew Folder
+GuiControl, 13:, PlsNoNewFolder, %NoNewFolder%
 Gui, 13:Add, Text, x5 y5 w358 h27, Pls Use -i And Enter Input File Path 4 Now...
 OnMessage(0x100, "OnKeyDown2")
 OnKeyDown2(wParam)
@@ -622,11 +700,13 @@ if (A_Gui = 13 && wParam = 13) ;Close GUI after hitting ENTER Key
 {
  Gui, Submit, Nohide
  GuiControlGet, InputAvar
+  GuiControlGet, IsANewFolder,13:, PlsNoNewFolder
  global UserInput = InputAvar
- ;GuiControl,, InputAvar, %UserInput%
+iniWrite, %IsANewFolder%, Configuration.ini, NoNewFolder , PlsNoNewFolderVar ;quick fix to save a checkbox config
  Gui, 13:Destroy
 }
 }
+Gui, Submit, Nohide
 Gui, 13:Show, w368 h96
 Return
 
@@ -638,6 +718,7 @@ Return
 Back2:
 Gui, 1:Show
 Gui, 3:Destroy
+gosub, GetPresetWindow
 Return
 
 UDPOverload:
@@ -742,35 +823,45 @@ Gui,Submit, Nohide
 return
 
 
-
 FugVideo:
+Gui, Submit, Nohide
+extension = gif
+NewerInput := StrReplace(NewerInput, "{!}", "!")
+IfInString, NewerInput, %extension% ; check if file extension is gif, if so use alternate loop option
+{
+loopit := "-ignore_loop 0"
+}
+else {
+loopit := ""
+}
 gosub EnableSox
 gosub, EnableSox ;DONT FORGET ABOUT THESE HANDY FUNCTIONS, FIXED CHECKBOX BUG
-Gui, Submit, Nohide
 transform, AllowSox, Deref, %AllowSox%
 Run, %ComSpec%,,,pid2
 sleep, 666
-Sendraw, ffmpeg %UserInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4% -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffplay -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i -
+Sendraw, ffmpeg %loopit% %NewerInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4% -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffplay -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - %IsFS%
 sleep, 60
 Send, {Enter}
 return
 
 SaveFugVideo:
+Gui,Submit, Nohide
 gosub EnableSox
 data = %A_Sec%%A_Min%%A_Hour%
 makefilename := MD5(data,StrLen(data))
-sfv := "ffmpeg %UserInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -c:v h263p -q:v 0 -y %NewFolder%/%makefilename%.avi"
-if UserInput contains png,jpg,bmp,tiff,jpeg,targa,xwd
+;NewerInput := StrReplace(NewerInput, "{+}", "+") ;OLD METHOD
+sfv := "ffmpeg %NewerInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -c:v h263p -q:v 0 -y %NewFolder%/%makefilename%.avi"
+if NewerInput contains png,jpg,bmp,tiff,jpeg,targa,xwd
 {
 msgbox, Image Input Detected!
 transform, AllowSox, Deref, %AllowSox%
-sfv := "ffmpeg %UserInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -y %NewFolder%/%makefilename%.bmp"
+sfv := "ffmpeg %NewerInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -y %NewFolder%/%makefilename%.bmp"
 }
 else
 
 transform, AllowSox, Deref, %AllowSox%
 transform, sfv, Deref, %sfv%
-Gui,Submit, Nohide
+;Gui,Submit, Nohide
 Runwait, %ComSpec% /c %sfv%,,,pid2
 AppendMe1 = %sfv%`n`n
 Fileappend,%AppendMe1%,fUn\debug\log.txt
@@ -983,15 +1074,16 @@ FugAudio:
 Gui,Submit, Nohide
 Run, cmd.exe
 sleep, 666
-Send, ffmpeg %aEncParam% %UserInput% -acodec %Aencodercodec% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffplay -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% {Enter}
+Send, ffmpeg %aEncParam% %NewerInput% -acodec %Aencodercodec% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffplay -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% {Enter}
 return
 
 SaveFugAudio:
+Gui,Submit, Nohide
 data = %A_Sec%%A_Min%%A_Hour%
 makefilename := MD5(data,StrLen(data))
-sfa := "ffmpeg %aEncParam% %UserInput% -acodec %Aencodercodec% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffmpeg -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% -y %NewFolder%/%makefilename%.wav"
+;NewerInput := StrReplace(NewerInput, "{+}", "+")
+sfa := "ffmpeg %aEncParam% %NewerInput% -acodec %Aencodercodec% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtIn% -i - -vcodec %VCompressor% %GlobalRes% %VFilters% -f rawvideo -pix_fmt %LePixFmtOut% - | ffmpeg -ar %aDecSmplr8% %DecFmt% -ac %ChanCount2% -i - -af volume=%FugAudioVol% -y %NewFolder%/%makefilename%.wav"
 transform, sfa, Deref, %sfa%
-Gui,Submit, Nohide
 Runwait, %ComSpec% /c %sfa%,,,pid2
 AppendMe = %sfa%`n`n
 Fileappend,%AppendMe%,fUn\debug\log.txt
@@ -999,6 +1091,17 @@ Process, Close, %pid3%
 gosub OpenLocation
 return
 
+IsFullscreen:
+if (FullScreenVar = 1)
+{
+IsFS =
+}
+
+if (FullScreenVar = 0)
+{
+IsFS = -fs
+}
+return
 
 UDP1:
 Gui,Submit, Nohide
@@ -1125,6 +1228,7 @@ Gui, 10:Add, button, x205 y210 w12 h12 v3chGetResVar gGetResolution,
 Gui, 10:Add, button, x165 y210 w12 h12 vLocationVar gOpenLocation,
 Gui, 10:Add, Checkbox, x144 y140 w102 h12 vLoopVar gEnableLoop, Enable Loop?
 Gui, 10:Add, Checkbox, x144 y152 w102 h12 vAudioVar gEnableAudio, "Sync" Audio?
+GuiControl, 10:Disable, AudioVar
 Gui 10:Add, CheckBox, x144 y164 w102 h12 vFrameVar, Save Frames?
 Gui 10:Add, CheckBox, x144 y176 w102 h12, idk?
 Gui 10:Show, w256 h317, <3 <3 <3
@@ -1137,12 +1241,7 @@ gosub MakeNewFolder
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
 
-FileSelectFile, UserInput
-AddFFMpegInputFlagToCommand := "-i "
-UserInput = %AddFFMpegInputFlagToCommand%%Quote%%UserInput%%Quote%
-newinput := UserInput
-newinput2 := UserInput
-newinput3 := UserInput
+gosub, Input
 AllowLoop := ""
 Gui,Submit, Nohide
 return
@@ -1415,6 +1514,7 @@ Gui, 9:Add, button, x205 y231 w12 h12 v4chGetResVar gGetResolution,
 Gui, 9:Add, button, x165 y231 w12 h12 vLocationVar gOpenLocation,
 Gui, 9:Add, Checkbox, x144 y161 w102 h12 vLoopVar gEnableLoop, Enable Loop?
 Gui, 9:Add, Checkbox, x144 y173 w102 h12 vAudioVar gEnableAudio, "Sync" Audio?
+GuiControl, 9:Disable, AudioVar
 Gui 9:Add, CheckBox, x144 y185 w102 h12 vFrameVar, Save Frames?
 Gui 9:Add, CheckBox, x144 y197 w102 h12, idk?
 Gui 9:Show, w256 h337, <3 <3 <3
@@ -1427,12 +1527,7 @@ gosub MakeNewFolder
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
 
-FileSelectFile, UserInput
-AddFFMpegInputFlagToCommand := "-i "
-UserInput = %AddFFMpegInputFlagToCommand%%Quote%%UserInput%%Quote%
-newinput := UserInput
-newinput2 := UserInput
-newinput3 := UserInput
+gosub, Input
 AllowLoop := ""
 Gui,Submit, Nohide
 return
@@ -1712,6 +1807,7 @@ Gui, 7:Add, button, x205 y275 w12 h12 v6chGetResVar gGetResolution,
 Gui, 7:Add, button, x165 y275 w12 h12 vLocationVar gOpenLocation,
 Gui, 7:Add, Checkbox, x144 y205 w102 h12 vLoopVar gEnableLoop, Enable Loop?
 Gui, 7:Add, Checkbox, x144 y217 w102 h12 vAudioVar gEnableAudio, "Sync" Audio?
+GuiControl, 7:Disable, AudioVar
 Gui 7:Add, CheckBox, x144 y229 w102 h12 vFrameVar, Save Frames?
 Gui 7:Add, CheckBox, x144 y241 w102 h12, idk?
 ;Gui Add, GroupBox, x4 y153 w58 h46, Format
@@ -1727,12 +1823,7 @@ gosub MakeNewFolder
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
 
-FileSelectFile, UserInput
-AddFFMpegInputFlagToCommand := "-i "
-UserInput = %AddFFMpegInputFlagToCommand%%Quote%%UserInput%%Quote%
-newinput := UserInput
-newinput2 := UserInput
-newinput3 := UserInput
+gosub, Input
 AllowLoop := ""
 Gui,Submit, Nohide
 return
@@ -1949,6 +2040,7 @@ else {
 ;no
 }
 Gui, Submit, Nohide
+gosub OpenLocation
 Return
 
 Shuffle6ch:
@@ -1973,7 +2065,7 @@ return
 
 GetResolution:
 Gui, Submit, Nohide
-ResInput = %UserInput%
+ResInput = %NewerInput%
 If RegExMatch(ResInput,"(flac|aic|ogg|wav|mp2|mp3)") {
 runwait, %ComSpec% /c ffmpeg %aEncParam% %ResInput% -acodec %Aencodercodec% %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% -y testmepls.u8
 
@@ -1985,7 +2077,7 @@ Bitrate := ComObjCreate("WScript.Shell").Exec(bitratepls).StdOut.ReadAll() ;Exec
 
          StringReplace, Bitrate, Bitrate, `r`n, %A_Space%, All ;Remove linebreak from clipboard
          transform, Bitrate, Deref, %Bitrate%
-		 StringTrimRight, Bitrate2, Bitrate, 4 ; Cut Bitrate length to what ffmpeg normally displays it as.
+		 StringTrimRight, Bitrate2, Bitrate, 4 ; Cut Bitrate length to what ffmpeg normally displays it as because im retarded.
 		 
 respls := "ffprobe %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% -i testmepls.u8 -show_entries format=duration -v quiet -of csv=s=x:p=0 | clip"
 
@@ -1994,16 +2086,23 @@ respls := "ffprobe %EncFmt% -ac %ChanCount1% -ar %aDecSmplr8% -i testmepls.u8 -s
 		 StringReplace, clipboard, clipboard, `r`n, %A_Space%, All ;Remove linebreak from clipboard
 		 Duration := clipboard
 		 
-Duration := floor(Duration)
-size := (Duration*Bitrate2)
-width := (size/24)
-width := floor(width)
+Duration := floor(Duration) ;Convert duration to integer
+size := (Duration*Bitrate2) ;Multiply Duration by bitrate
+width := (size/24) ;Divide width by bits per pixel, bgr24 in this case
+width := floor(width) ;Convert float to integer
+OriginalWidth := width ;Save Original width value
+;;;StringLen, Length, width ;old method
+;;;Length := (Length -2) ;Subtract two from the width strings total length ; old method
+
+lemath := 10**(StrLen(width)-1) ;Count string length; ** is the same as saying "exponents" and the -1 at the end makes the string always one digit less, for now.
+width := Floor(width / lemath) * lemath
+
 height = 1000
 ;global swappedRes := -s %width%x%height% ; huehuehue
 
          GuiControl,, GlobalRes, -s %width%x%height%
 ;global SEX := clipboard
-         msgbox, Kind of Converted Audio duration To Resolution -s %width%x%height%`nBitrate Is Now: %Bitrate2%`nOriginally: %Bitrate%
+         msgbox, Kind of Converted Audio duration To Resolution -s %width%x%height%`nOriginal Width was %OriginalWidth% Before being rounded down.`nBitrate Is Now: %Bitrate2%`nOriginally: %Bitrate%
 
 		 ;msgbox, Bitrate %Bitrate%
 		 ;runwait, %ComSpec% /c %respls%
@@ -2012,7 +2111,7 @@ height = 1000
 }
 else
 
-ResInput = %UserInput%
+ResInput = %NewerInput%
 respls = "ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 %ResInput% | clip"
 transform, respls, Deref, %respls%
 runwait, cmd.exe /c %respls% ,,Hide
@@ -2085,7 +2184,7 @@ Gui 8:Add, Edit, x16 y274 w39 h22 v8ChanFmt, -f u8
 Gui 8:Add, Edit, x81 y274 w39 h21, -r 24
 Gui 8:Add, Slider, x-2 y204 w262 h28 ToolTip v8chanSR8 Range666-88100, 8000
 Gui 8:Add, CheckBox, x144 y258 w102 h12 vLoopVar gEnableLoop, Enable Loop?
-Gui 8:Add, CheckBox, x144 y270 w102 h12, "Sync" Audio?
+;Gui 8:Add, CheckBox, x144 y270 w102 h12, "Sync" Audio?
 Gui 8:Add, CheckBox, x144 y282 w102 h12 vFrameVar, Save Frames?
 Gui 8:Add, CheckBox, x144 y294 w102 h12, idk?
 Gui 8:Add, Button, x185 y328 w12 h12 v8chShuffleVar gShuffle8ch,
@@ -2102,12 +2201,7 @@ gosub MakeNewFolder
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
 
-FileSelectFile, UserInput
-AddFFMpegInputFlagToCommand := "-i "
-UserInput = %AddFFMpegInputFlagToCommand%%Quote%%UserInput%%Quote%
-newinput := UserInput
-newinput2 := UserInput
-newinput3 := UserInput
+gosub, Input
 AllowLoop := ""
 Gui,Submit, Nohide
 return
@@ -2406,7 +2500,7 @@ Gui 11:Add, Edit, x16 y373 w39 h22 v12ChanFmt, -f u8
 Gui 11:Add, Edit, x81 y373 w39 h21, -r 24
 Gui 11:Add, Slider, x-2 y303 w262 h28 ToolTip v12chanSR8 Range666-88100, 8000
 Gui 11:Add, CheckBox, x144 y357 w102 h12 vLoopVar gEnableLoop, Enable Loop?
-Gui 11:Add, CheckBox, x144 y369 w102 h12, "Sync" Audio?
+;Gui 11:Add, CheckBox, x144 y369 w102 h12, "Sync" Audio?
 Gui 11:Add, CheckBox, x144 y381 w102 h12 vFrameVar, Save Frames?
 Gui 11:Add, CheckBox, x144 y393 w102 h12, idk?
 Gui 11:Add, Button, x185 y427 w12 h12 v12chShuffleVar gShuffle12ch,
@@ -2424,12 +2518,7 @@ gosub MakeNewFolder
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
 
-FileSelectFile, UserInput
-AddFFMpegInputFlagToCommand := "-i "
-UserInput = %AddFFMpegInputFlagToCommand%%Quote%%UserInput%%Quote%
-newinput := UserInput
-newinput2 := UserInput
-newinput3 := UserInput
+gosub, Input
 AllowLoop := ""
 Gui,Submit, Nohide
 return
@@ -2552,7 +2641,7 @@ transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN
 GuiControlGet, LoopVar
 GuiControlGet, FrameVar
 Gui, Submit, Nohide
-if UserInput contains png,jpg,bmp,tiff,jpeg,targa,xwd
+if NewerInput contains png,jpg,bmp,tiff,jpeg,targa,xwd
 {
 msgbox, 
 (
@@ -2566,7 +2655,7 @@ OutputVar :=
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
-else if UserInput contains webm,mp4,mkv,avi,nut,wmv,
+else if NewerInput contains webm,mp4,mkv,avi,nut,wmv,
 {
 ;msgbox, Video Detected.
 OutputVar :=
@@ -2615,6 +2704,7 @@ transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN
 else {
 ;no
 }
+
 
 Save12ch := 
 (
@@ -2737,6 +2827,7 @@ Gui 12:Add, Edit, x81 y473 w39 h21 v16ChanFR, -r 24
 Gui 12:Add, Slider, x-2 y403 w262 h28 +0x40 +Tooltip Range666-88100 v16ChanSR8, 88100
 Gui 12:Add, CheckBox, x144 y457 w102 h12 vLoopVar gEnableLoop, Enable Loop?
 Gui 12:Add, CheckBox, x144 y469 w102 h12 vAudioVar gEnableAudio, "Sync" Audio?
+GuiControl, 12:Disable, AudioVar
 Gui 12:Add, CheckBox, x144 y481 w102 h12 vFrameVar, Save Frames?
 Gui 12:Add, CheckBox, x144 y493 w102 h12, idk?
 Gui 12:Add, Button, x185 y527 w12 h12 v16chShuffleVar gShuffle16ch,
@@ -2770,12 +2861,7 @@ gosub MakeNewFolder
 FileCreateDir, OUTPUT\MultiChannel
 FileCreateDir, %NewFolder%\frames
 
-FileSelectFile, UserInput
-AddFFMpegInputFlagToCommand := "-i "
-UserInput = %AddFFMpegInputFlagToCommand%%Quote%%UserInput%%Quote%
-newinput := UserInput
-newinput2 := UserInput
-newinput3 := UserInput
+gosub, Input
 AllowLoop := ""
 Gui,Submit, Nohide
 return
@@ -3048,18 +3134,16 @@ EnableLoop:
 Gui, Submit, Nohide
 GuiControlGet, LoopVar
 extension = gif
-newinput := UserInput
-newinput2 := UserInput
-newinput3 := UserInput
-;UserInput6ch := UserInput
-
+newinput := NewerInput
+newinput2 := NewerInput
+newinput3 := NewerInput
 AllowLoop := "-stream_loop -1"
-if UserInput contains gif
+if NewerInput contains gif
 {
 AllowLoop := "-ignore_loop 0"
 ;newinput3 := UserInput ; this might also cause bug!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
-else if UserInput contains jpeg,jpg
+else if NewerInput contains jpeg,jpg
 {
 AllowLoop := "-loop 1"
 }
@@ -3073,8 +3157,7 @@ newinput3 := "" ; This variable is important to clearing original userinput vari
 }
 if (LoopVar = 0) {
 AllowLoop := ""
-newinput3 := UserInput ; This variable is important to reseting userinput if loop is disabled.
-;msgbox, %UserInput%
+newinput3 := NewerInput ; This variable is important to reseting userinput if loop is disabled.
 }
 else {
 ;newinput3 := UserInput ; here was last change, this causes bug!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -3083,34 +3166,10 @@ transform, AllowLoop, Deref, %AllowLoop%
 Gui, Submit, Nohide
 return
 
-======================
-
-
-
-;Enable6ChShuffle:
-;Gui, Submit, Nohide
-;GuiControlGet, 6ChShuffleVar
-;if (6ChShuffleVar = 0) {
-;transform, Do6Ch, Deref, %Do6ch%
-;}
-;else {
-;msgbox, Shuffle Mode Disabled!
-;}
-;if (DebugVar = 1) {
-;transform, Do6Ch, Deref, %Do6Ch%
-;msgbox, Shuffle Mode Enabled!
-;}
-;else {
-;;no
-;}
-;return
-
-
 ;=========================================================================================================
 
 
-
-F8::Send, FFmpeg %UserInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% | ffplay -vcodec %Decoderchoice% -acodec %ADecoderchoice% -vf format=%Pixfmtdec% %DecoderSetting% -i - {Enter}
+;F8::Send, FFmpeg %UserInput% -vcodec %Encoderchoice% -acodec %AEncoderchoice% -vf format=%Pixfmt% %EncoderSetting% | ffplay -vcodec %Decoderchoice% -acodec %ADecoderchoice% -vf format=%Pixfmtdec% %DecoderSetting% -i - {Enter}
 F7::
 Send, cd fUn {Enter}
 Sleep 500, 
@@ -3148,6 +3207,7 @@ FileRemoveDir, OUTPUT\MultiChannel, 1
 FileRemoveDir, OUTPUT\SonifyVideo, 1
 FileRemoveDir, OUTPUT\SonifyAudio, 1
 FileRemoveDir, OUTPUT\SonifyBatch, 1
+FileRemoveDir, OUTPUT\SonifyAudioBatch, 1
 }
 else {
 }
@@ -3198,8 +3258,14 @@ return
 Gui, 12:Destroy
 return
 13GuiClose:
+{
+GuiControlGet, IsANewFolder,13:, PlsNoNewFolder
+iniWrite, %IsANewFolder%, Configuration.ini, NoNewFolder , PlsNoNewFolderVar ;quick fix to save a checkbox config
+}
 Gui, 13:Destroy
 return
+
+#Include fUn/PresetManager.ahk
 
 GuiEscape:
 ButtonOK:
