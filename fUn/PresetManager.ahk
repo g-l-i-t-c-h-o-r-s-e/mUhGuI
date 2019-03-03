@@ -17,6 +17,7 @@ PresetsConfigs1()
 	Gui, wao:Add, Button, x66 gSubmitMainConfig, Save Settings
 	Gui, wao:Add, Checkbox, x1 y116 vPlsNoFolder,Disable New Folder [When Preset Loaded]
 	Gui, wao:Add, Checkbox, x1 y130 vPlsNoInput,Disable Preset Input File
+    GuiControl, wao:, PlsNoFolder, 1
 	WinSet, AlwaysOnTop,, Main,
 	WinMove, Main,, 0 +10, 0 +10
 }
@@ -34,6 +35,7 @@ PresetsConfigs2()
 	Gui, wao:Add, Button, x66 gSubmitSonificationConfig, Save Settings
 	Gui, wao:Add, Checkbox, x1 y116 vPlsNoFolder,Disable New Folder [When Preset Loaded]
     Gui, wao:Add, Checkbox, x1 y130 vPlsNoInput,Disable Preset Input File
+    GuiControl, wao:, PlsNoFolder, 1
 	WinSet, AlwaysOnTop,, A/V,
 	WinMove, A/V,, 0 +10, 0 +10
 }
