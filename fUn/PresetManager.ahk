@@ -144,6 +144,20 @@ splitList := StrReplace(Presets, "`n", "|")
 GuiControl,, SelPreset, |%splitList%
 GuiControl, Choose, SelPreset, %PresetName%
 iniWrite, %Presets%, Configuration.ini, SonificationPresetsList , SelPreset
+
+;Make SOX effect Variable "1" (which means blank in this case) if effect box is empty.
+ if (Effect3Var = "")
+    {
+     global Effect3Var := 1
+ }
+ if (Effect2Var = "")
+    {
+     global Effect2Var := 1
+ }
+ if (Effect1Var = "")
+    {
+     global Effect1Var := 1
+ }
  
  ;Write GUI Elements into Config.
  iniWrite, %MeFileInput%, Configuration.ini, %SelPreset% , InputFileVar
@@ -219,7 +233,7 @@ FileCreateDir, OUTPUT\SonifyVideo
 FileCreateDir, %NewFolder%
  }
 else
-If RegExMatch(NewerInput,"(mp3|wav)")
+If RegExMatch(NewerInput,"(mp3|wav|flac|aic|ogg|alac|mp2)")
 {
 If (PlsnoInput = 0)
 {
