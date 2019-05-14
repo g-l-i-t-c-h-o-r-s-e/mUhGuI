@@ -48,7 +48,7 @@ global GuiColor = 884488
 global comb := "m|e|m|e"
 
 
-;Make Backround via atagens "chexr" command line hex editor.
+;Seelect random video codec and randomize variable values for hex editing the background image.
 FileDelete, %A_ScriptDir%\fUn\background.bmp
  Random, randNum, 10, 99
   Random, randNum2, 1000, 9999
@@ -63,17 +63,17 @@ Array := ["msvideo1", "jpegls -pred median", "libxavs", "libvpx", "libtheora", "
  RANDUMB1 := Array2[randint]
 transform, RANDUMB1, Deref, %RANDUMB1%
 
+;Make Backround via atagens "chexr" command line hex editor.
 makeBack :=
 (
 "ffmpeg -ss %randNum3% -f lavfi -i testsrc2=s=640x360 -f avi -q:v 0 -vcodec %Codec%  -frames 1 -vf eq=contrast=-1 outpls.fuk -y && chexr outpls.fuk %randNum4% %RANDUMB1% bentpls.fuk && ffmpeg -f avi  -i bentpls.fuk %A_ScriptDir%\fUn\background.bmp -y"
 )
 transform, makeBack, Deref, %makeBack%
-;;;msgbox, Codec=%Codec%`nHex Target=%randNum4%`nHex Replace=%RANDUMB1% ;Display Codec and Hex Values at startup
 runwait, cmd.exe /c %makeBack%,,Hide, pid
 
 RetryBackground:
 ifNotExist, %A_ScriptDir%\fUn\background.bmp
-{
+   {
 Random, randNum, 10, 99
 Random, randNum2, 1000, 9999
 Random, randNum3, 1, 30
@@ -95,10 +95,10 @@ transform, makeBack, Deref, %makeBack%
 ;;;msgbox, RETRYING`nCodec=%Codec%`nHex Target=%randNum4%`nHex Replace=%RANDUMB1% ;Display Codec and Hex Values at startup
 runwait, cmd.exe /c %makeBack%,,Hide, pid
 ifNotExist, %A_ScriptDir%\fUn\background.bmp
-{
-gosub, RetryBackground
-return ; need this return here for bug issues
-}
+   {
+    gosub, RetryBackground
+   return ; need this return here for bug issues
+ }
 }
 FileDelete, %A_ScriptDir%\outpls.fuk
 FileDelete, %A_ScriptDir%\bentpls.fuk
@@ -358,6 +358,13 @@ else
 
 	  }
 }
+If (WinExist("<3"))
+{
+ WinWait, OUTPUT
+ WinSet, AlwaysOnTop,, OUTPUT,
+ sleep, 500
+ WinActivate, OUTPUT
+ }
 return
 
 EnableAudio:
@@ -850,7 +857,7 @@ gosub EnableSox
 data = %A_Sec%%A_Min%%A_Hour%
 makefilename := MD5(data,StrLen(data))
 ;NewerInput := StrReplace(NewerInput, "{+}", "+") ;OLD METHOD
-sfv := "ffmpeg %NewerInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -c:v h263p -q:v 0 -y %NewFolder%/%makefilename%.avi"
+sfv := "ffmpeg %NewerInput% %vEncParam% -f rawvideo -c:v %BentVcodec% -pix_fmt %LePixFmtIn% %GlobalRes% - %AllowSox% | ffmpeg %InputFmt% -ar %vDecSmplr8% -ac %ChanCount4%  -i - %GlobalRes% -codec %BentAcodec% %AFilters% %OutputFmt% -ac %ChanCount3% -ar %vDecSmplr8% - | ffmpeg -f rawvideo %GlobalRes% -pix_fmt %LePixFmtOut% -i - -c:v h263p -q:v 0 -y %NewFolder%/%makefilename%.avi %NewFolder%/%makefilename%.gif"
 if NewerInput contains png,jpg,bmp,tiff,jpeg,targa,xwd
 {
 msgbox, Image Input Detected!
@@ -1994,7 +2001,7 @@ Exporting as Frames!!! :>
 )
 OutputVar :=
 (
-"-f image2 %NewFolder%/frames/frame%PercentVar%04d.png -y"
+"-f image2 %NewFolder%/frames/frame%PercentVar%04d.png -y && ffplay -loop 0 -f image2 -i %NewFolder%/frames/frame%PercentVar%04d.png"
 )
 transform, OutputVar, Deref, %OutputVar% ; MAKE SURE YOU PUT THESE TRANSFORMS IN THE RIGHT PLACE, WASTED 2 HOURS ON THIS
 }
@@ -2018,13 +2025,10 @@ Send, %Save6Ch%
 sleep, 88
 Send {Enter}
 sleep, 100
-AppendMePls = `n`n%Save6Ch%`n`n
+AppendMePls = `n`nSave6Ch`n`n ;fixed append here, remove percent signs
 transform, AppendMePls, Deref, %AppendMePls%
 Fileappend,%AppendMePls%,fUn\debug\log.txt
 Gui,Submit, Nohide
-}
-else {
-;nah
 }
 if (DebugVar = 1) {
 transform, Save6Ch, Deref, %Save6Ch%
@@ -2035,12 +2039,13 @@ file.Write(Save6Ch)
 file.Close()
 sleep, 100
 Run, cmd.exe /k fUn\debug\poop.bat
-}
-else {
-;no
+;gosub OpenLocation
 }
 Gui, Submit, Nohide
-gosub OpenLocation
+WinWaitActive, OUTPUT
+{
+ gosub, OpenLocation
+}
 Return
 
 Shuffle6ch:
@@ -2075,7 +2080,7 @@ bitratepls := "ffprobe -show_entries format=bit_rate -v quiet -of csv=s=x:p=0 %E
 		 
 Bitrate := ComObjCreate("WScript.Shell").Exec(bitratepls).StdOut.ReadAll() ;Execute ffprobe and save stdout to variable!
 
-         StringReplace, Bitrate, Bitrate, `r`n, %A_Space%, All ;Remove linebreak from clipboard
+         StringReplace, Bitrate, Bitrate, `r`n, %A_Space%, All ;Remove linebreak from bitrate
          transform, Bitrate, Deref, %Bitrate%
 		 StringTrimRight, Bitrate2, Bitrate, 4 ; Cut Bitrate length to what ffmpeg normally displays it as because im retarded.
 		 
@@ -2184,7 +2189,8 @@ Gui 8:Add, Edit, x16 y274 w39 h22 v8ChanFmt, -f u8
 Gui 8:Add, Edit, x81 y274 w39 h21, -r 24
 Gui 8:Add, Slider, x-2 y204 w262 h28 ToolTip v8chanSR8 Range666-88100, 8000
 Gui 8:Add, CheckBox, x144 y258 w102 h12 vLoopVar gEnableLoop, Enable Loop?
-;Gui 8:Add, CheckBox, x144 y270 w102 h12, "Sync" Audio?
+Gui 8:Add, CheckBox, x144 y270 w102 h12 vAudioVar, "Sync" Audio?
+GuiControl, 8:Disable, AudioVar
 Gui 8:Add, CheckBox, x144 y282 w102 h12 vFrameVar, Save Frames?
 Gui 8:Add, CheckBox, x144 y294 w102 h12, idk?
 Gui 8:Add, Button, x185 y328 w12 h12 v8chShuffleVar gShuffle8ch,
@@ -2500,7 +2506,8 @@ Gui 11:Add, Edit, x16 y373 w39 h22 v12ChanFmt, -f u8
 Gui 11:Add, Edit, x81 y373 w39 h21, -r 24
 Gui 11:Add, Slider, x-2 y303 w262 h28 ToolTip v12chanSR8 Range666-88100, 8000
 Gui 11:Add, CheckBox, x144 y357 w102 h12 vLoopVar gEnableLoop, Enable Loop?
-;Gui 11:Add, CheckBox, x144 y369 w102 h12, "Sync" Audio?
+Gui 11:Add, CheckBox, x144 y369 w102 h12 vAudioVar, "Sync" Audio?
+GuiControl, 11:Disable, AudioVar
 Gui 11:Add, CheckBox, x144 y381 w102 h12 vFrameVar, Save Frames?
 Gui 11:Add, CheckBox, x144 y393 w102 h12, idk?
 Gui 11:Add, Button, x185 y427 w12 h12 v12chShuffleVar gShuffle12ch,
