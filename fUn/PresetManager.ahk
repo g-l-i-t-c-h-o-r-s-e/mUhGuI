@@ -58,12 +58,25 @@ Return
 SubmitMainConfig:
  Gui, Submit, NoHide
  GuiControlGet, PresetName,, SelPreset
- GuiControlGet, Slider1Var,, aDecSmplr8
- GuiControlGet, ComboBoxVal,, ComboBox1
+ GuiControlGet, DecoderchoiceVar,1:, Decoderchoice
+ GuiControlGet, EncoderchoiceVar,1:, Encoderchoice
+ GuiControlGet, ADecoderchoiceVar,1:, ADecoderchoice
+ GuiControlGet, AEncoderchoiceVar,1:, AEncoderchoice
+ GuiControlGet, PixfmtVar,1:, Pixfmt
+ GuiControlGet, PixfmtdecVar,1:, Pixfmtdec
+ GuiControlGet, DecoderSettingVar,1:, DecoderSetting
+ GuiControlGet, EncoderSettingVar,1:, EncoderSetting
+ 
 
- iniWrite, %Comments%, Configuration.ini, %SelPreset% , Comments
- iniWrite, %Slider1Var%, Configuration.ini, %SelPreset% , Slider1
- iniWrite, %ComboBoxVal%, Configuration.ini, %SelPreset% , ComboBox1
+ iniWrite, %DecoderchoiceVar%, Configuration.ini, %SelPreset% , Decoderchoice
+ iniWrite, %EncoderchoiceVar%, Configuration.ini, %SelPreset% , Encoderchoice
+ iniWrite, %ADecoderchoiceVar%, Configuration.ini, %SelPreset% , ADecoderchoice
+ iniWrite, %AEncoderchoiceVar%, Configuration.ini, %SelPreset% , AEncoderchoice
+ iniWrite, %PixfmtVar%, Configuration.ini, %SelPreset% , Pixfmt
+ iniWrite, %PixfmtdecVar%, Configuration.ini, %SelPreset% , Pixfmtdec
+ iniWrite, %DecoderSettingVar%, Configuration.ini, %SelPreset% , DecoderSetting
+ iniWrite, %EncoderSettingVar%, Configuration.ini, %SelPreset% , EncoderSetting
+
 
 ifNotInString, Presets, %SelPreset%
 {
@@ -80,17 +93,30 @@ ifNotInString, Presets, %SelPreset%
 
 LoadMainPreset:
  Gui, Submit, Nohide
- iniRead, commentsVar, Configuration.ini, %SelPreset% , Comments
- iniRead, Slider1Var, Configuration.ini, %SelPreset% , Slider1
- iniRead, ComboBoxVal, Configuration.ini, %SelPreset% , ComboBox1
+ iniRead, DecoderchoiceVar, Configuration.ini, %SelPreset% , Decoderchoice
+ iniRead, EncoderchoiceVar, Configuration.ini, %SelPreset% , Encoderchoice
+ iniRead, ADecoderchoiceVar, Configuration.ini, %SelPreset% , ADecoderchoice
+ iniRead, AEncoderchoiceVar, Configuration.ini, %SelPreset% , AEncoderchoice
+ iniRead, PixfmtVar, Configuration.ini, %SelPreset% , Pixfmt
+ iniRead, PixfmtdecVar, Configuration.ini, %SelPreset% , Pixfmtdec
+ iniRead, DecoderSettingVar, Configuration.ini, %SelPreset% , DecoderSetting
+ iniRead, EncoderSettingVar, Configuration.ini, %SelPreset% , EncoderSetting
 
- GuiControl,, Comments, %commentsVar%
- GuiControl,, aDecSmplr8, %Slider1Var%
+
+ GuiControl, 1:Choose, Decoderchoice, %DecoderchoiceVar%
+ GuiControl, 1:Choose, Encoderchoice, %EncoderchoiceVar%
+ GuiControl, 1:Choose, ADecoderchoice, %ADecoderchoiceVar%
+ GuiControl, 1:Choose, AEncoderchoice, %AEncoderchoiceVar%
+ 
+ GuiControl, 1:Choose, Pixfmt, %PixfmtVar%
+ GuiControl, 1:Choose, Pixfmtdec, %PixfmtdecVar%
+ 
+ GuiControl, 1:, DecoderSetting, %DecoderSettingVar%
+ GuiControl, 1:, EncoderSetting, %EncoderSettingVar%
  GuiControl, Choose, SelPreset, %PresetVar%
- GuiControl, Choose, ComboBox1, %ComboBoxVal%
  return
 
- ;Get GUI Elements contents, and assign to new variables.
+;Get GUI Elements contents, and assign to new variables.
 SubmitSonificationConfig:
  Gui, Submit, NoHide
  MeFileInput := NewerInput
