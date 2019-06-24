@@ -38,6 +38,7 @@
 #Fixed main menu "mUhGuI" overlay dissapearing.
 #Fixed some broken input boxes on KMS tab.
 #Changed the Mouse RightClick spam toggle to use CapsLock & F1 instead of just F5.
+#Added Preset Manager to the main window now.
 #Added Preset Manager! (Unfinished)
 #Fixed some bugs and variable issues, including specials characters in filenames.
 #Updated the Audio Sonification section, the GetRes button now also works with audio input.
