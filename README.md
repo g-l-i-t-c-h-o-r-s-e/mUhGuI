@@ -1,3 +1,6 @@
+# EDIT
+I realize how some parts in this program aren't the most clear on how to use, I will be cleaning up the code, GUI and making a tutorial video as well in the near future.
+
 # mUhGuI
 An EZ Command Line and FFMpeg GUI made for 
 G L I T C H I N G
